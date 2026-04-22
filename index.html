@@ -6,10 +6,7 @@
   <title>Gesture Particle Magic Lite</title>
   <style>
     html, body {
-      margin: 0;
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
+      margin: 0; width: 100%; height: 100%; overflow: hidden;
       background:
         radial-gradient(circle at 50% 45%, rgba(99, 102, 241, 0.10), transparent 22%),
         radial-gradient(circle at 30% 30%, rgba(236, 72, 153, 0.08), transparent 24%),
@@ -17,173 +14,58 @@
         radial-gradient(circle at center, #0b1020 0%, #020617 58%, #000 100%);
       font-family: Inter, Arial, sans-serif;
     }
-
-    #app, canvas {
-      position: fixed;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      display: block;
-    }
-
-    video {
-      display: none;
-    }
-
-    .overlay {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      color: white;
-      transition: opacity 0.3s ease;
-    }
-
-    .overlay.hidden {
-      opacity: 0;
-    }
-
+    #app, canvas { position: fixed; inset: 0; width: 100%; height: 100%; display: block; }
+    video { display: none; }
+    .overlay { position: fixed; inset: 0; pointer-events: none; color: white; transition: opacity 0.3s ease; }
+    .overlay.hidden { opacity: 0; }
     .topbar {
-      position: absolute;
-      top: 16px;
-      left: 50%;
-      transform: translateX(-50%);
-      padding: 8px 14px;
-      border-radius: 999px;
-      background: rgba(255,255,255,0.06);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255,255,255,0.08);
-      font-size: 11px;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      color: rgba(255,255,255,0.62);
+      position: absolute; top: 16px; left: 50%; transform: translateX(-50%);
+      padding: 8px 14px; border-radius: 999px; background: rgba(255,255,255,0.06);
+      backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.08);
+      font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; color: rgba(255,255,255,0.62);
     }
-
     .controls {
-      position: absolute;
-      left: 16px;
-      bottom: 16px;
-      max-width: min(350px, calc(100vw - 32px));
-      padding: 16px;
-      border-radius: 20px;
-      background: rgba(8, 15, 30, 0.52);
-      backdrop-filter: blur(14px);
-      border: 1px solid rgba(255,255,255,0.12);
-      pointer-events: auto;
-      box-shadow: 0 12px 40px rgba(0,0,0,0.28);
+      position: absolute; left: 16px; bottom: 16px; max-width: min(360px, calc(100vw - 32px));
+      padding: 16px; border-radius: 20px; background: rgba(8, 15, 30, 0.52);
+      backdrop-filter: blur(14px); border: 1px solid rgba(255,255,255,0.12);
+      pointer-events: auto; box-shadow: 0 12px 40px rgba(0,0,0,0.28);
     }
-
-    .controls h1 {
-      margin: 0 0 8px;
-      font-size: 20px;
-    }
-
-    .controls p {
-      margin: 0;
-      line-height: 1.5;
-      color: rgba(255,255,255,0.74);
-      font-size: 14px;
-    }
-
-    .buttons {
-      display: flex;
-      gap: 10px;
-      margin-top: 14px;
-      flex-wrap: wrap;
-    }
-
+    .controls h1 { margin: 0 0 8px; font-size: 20px; }
+    .controls p { margin: 0; line-height: 1.5; color: rgba(255,255,255,0.74); font-size: 14px; }
+    .buttons { display: flex; gap: 10px; margin-top: 14px; flex-wrap: wrap; }
     button {
-      border: 0;
-      border-radius: 14px;
-      padding: 11px 16px;
-      font-size: 14px;
-      font-weight: 800;
-      cursor: pointer;
-      transition: transform 0.15s ease;
+      border: 0; border-radius: 14px; padding: 11px 16px; font-size: 14px; font-weight: 800;
+      cursor: pointer; transition: transform 0.15s ease;
     }
-
     button:hover { transform: translateY(-1px); }
     button:active { transform: translateY(1px); }
-
-    .primary {
-      background: linear-gradient(135deg, #7dd3fc, #c084fc);
-      color: #08111f;
-    }
-
-    .ghost {
-      background: rgba(255,255,255,0.08);
-      color: white;
-      border: 1px solid rgba(255,255,255,0.12);
-    }
-
-    .status, .mode {
-      margin-top: 12px;
-      font-size: 13px;
-      color: rgba(255,255,255,0.74);
-    }
-
+    .primary { background: linear-gradient(135deg, #7dd3fc, #c084fc); color: #08111f; }
+    .ghost { background: rgba(255,255,255,0.08); color: white; border: 1px solid rgba(255,255,255,0.12); }
+    .status, .mode { margin-top: 12px; font-size: 13px; color: rgba(255,255,255,0.74); }
     .badge {
-      display: inline-flex;
-      gap: 8px;
-      align-items: center;
-      margin-top: 12px;
-      padding: 8px 12px;
-      border-radius: 999px;
-      background: rgba(255,255,255,0.08);
-      font-size: 13px;
+      display: inline-flex; gap: 8px; align-items: center; margin-top: 12px;
+      padding: 8px 12px; border-radius: 999px; background: rgba(255,255,255,0.08); font-size: 13px;
     }
-
-    .dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 999px;
-      background: #f59e0b;
-      box-shadow: 0 0 12px currentColor;
-    }
-
+    .dot { width: 10px; height: 10px; border-radius: 999px; background: #f59e0b; box-shadow: 0 0 12px currentColor; }
     .dot.ok { background: #34d399; }
     .dot.err { background: #fb7185; }
-
     .hint {
-      position: absolute;
-      right: 16px;
-      bottom: 16px;
-      max-width: min(320px, calc(100vw - 32px));
-      padding: 14px 16px;
-      border-radius: 18px;
-      background: rgba(8, 15, 30, 0.44);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(255,255,255,0.1);
-      color: rgba(255,255,255,0.76);
-      line-height: 1.55;
-      font-size: 13px;
+      position: absolute; right: 16px; bottom: 16px; max-width: min(320px, calc(100vw - 32px));
+      padding: 14px 16px; border-radius: 18px; background: rgba(8, 15, 30, 0.44);
+      backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.1);
+      color: rgba(255,255,255,0.76); line-height: 1.55; font-size: 13px;
     }
-
     @media (max-width: 760px) {
       .hint { display: none; }
-      .controls {
-        max-width: calc(100vw - 24px);
-        left: 12px;
-        bottom: 12px;
-      }
+      .controls { max-width: calc(100vw - 24px); left: 12px; bottom: 12px; }
     }
   </style>
-
-  <script type="importmap">
-    {
-      "imports": {
-        "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
-        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
-      }
-    }
-  </script>
 </head>
 <body>
   <div id="app"></div>
   <video id="video" autoplay playsinline muted></video>
-
   <div class="overlay">
     <div class="topbar">gesture particle lite</div>
-
     <div class="controls">
       <h1>Gesture Particle Magic Lite</h1>
       <p>Pinch = LOVE. 1 jari = LOVE YOU. 2 jari = © COPYRIGHT. 3 jari = DWI CUYY. 5 jari = LANJUT.</p>
@@ -195,7 +77,6 @@
       <div id="status" class="status">Buka lewat HTTPS atau localhost supaya kamera bisa jalan.</div>
       <div id="modeText" class="mode">Mode: IDLE</div>
     </div>
-
     <div class="hint">
       Pinch = LOVE.<br>
       1 jari = LOVE YOU.<br>
@@ -206,10 +87,10 @@
   </div>
 
   <script type="module">
-    import * as THREE from "three";
-    import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js";
-    import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
-    import { UnrealBloomPass } from "three/addons/postprocessing/UnrealBloomPass.js";
+    import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js";
+    import { EffectComposer } from "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/postprocessing/EffectComposer.js";
+    import { RenderPass } from "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/postprocessing/RenderPass.js";
+    import { UnrealBloomPass } from "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/postprocessing/UnrealBloomPass.js";
     import { HandLandmarker, FilesetResolver } from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.18";
 
     const app = document.getElementById("app");
@@ -222,15 +103,8 @@
     const statusEl = document.getElementById("status");
     const modeText = document.getElementById("modeText");
 
-    function assert(condition, message) {
-      if (!condition) throw new Error(`Smoke test failed: ${message}`);
-    }
-
-    assert(app, "#app harus ada");
-    assert(video, "#video harus ada");
-
     const scene = new THREE.Scene();
-    const aspect = window.innerWidth / window.innerHeight;
+    let aspect = window.innerWidth / window.innerHeight;
     const camera = new THREE.OrthographicCamera(-aspect, aspect, 1, -1, 0.1, 10);
     camera.position.z = 2;
 
@@ -302,16 +176,7 @@
     const points = new THREE.Points(geometry, material);
     scene.add(points);
 
-    const pointer = {
-      x: 0,
-      y: 0,
-      smoothX: 0,
-      smoothY: 0,
-      vx: 0,
-      vy: 0,
-      active: false
-    };
-
+    const pointer = { x: 0, y: 0, smoothX: 0, smoothY: 0, vx: 0, vy: 0, active: false };
     let handLandmarker = null;
     let cameraStarted = false;
     let lastVideoTime = -1;
@@ -337,9 +202,7 @@
       if (subtext) statusEl.textContent = subtext;
     }
 
-    function viewScale() {
-      return { x: window.innerWidth / window.innerHeight, y: 1 };
-    }
+    function viewScale() { return { x: window.innerWidth / window.innerHeight, y: 1 }; }
 
     function paletteColor(index, palette) {
       const arr = palette[index % palette.length];
@@ -348,10 +211,8 @@
 
     function buildTextPoints(text) {
       const off = document.createElement("canvas");
-      const w = 1500;
-      const h = 760;
-      off.width = w;
-      off.height = h;
+      const w = 1500, h = 760;
+      off.width = w; off.height = h;
       const ctx = off.getContext("2d", { willReadFrequently: true });
       ctx.clearRect(0, 0, w, h);
       const fontSize = text.length > 10 ? 150 : 210;
@@ -368,18 +229,13 @@
         for (let x = 0; x < w; x += step) {
           if (image[(y * w + x) * 4 + 3] > 40) {
             pts.push({
-              pos: new THREE.Vector3(
-                ((x / w) - 0.5) * 1.35 * scale.x,
-                (0.5 - (y / h)) * 0.88,
-                0
-              ),
+              pos: new THREE.Vector3(((x / w) - 0.5) * 1.35 * scale.x, (0.5 - (y / h)) * 0.88, 0),
               t: x / w
             });
           }
         }
       }
-      assert(pts.length > 0, `Generated text points for ${text}`);
-      return pts;
+      return pts.length ? pts : [{ pos: new THREE.Vector3(0, 0, 0), t: 0 }];
     }
 
     function buildHeartPoints() {
@@ -389,11 +245,8 @@
         const x = (Math.random() * 2 - 1) * 1.2;
         const y = (Math.random() * 2 - 1) * 1.2;
         const eq = Math.pow(x * x + y * y - 1, 3) - x * x * Math.pow(y, 3);
-        if (eq <= 0) {
-          pts.push({ pos: new THREE.Vector3(x * 0.55 * aspectLocal, y * 0.75, 0), t: Math.random() });
-        }
+        if (eq <= 0) pts.push({ pos: new THREE.Vector3(x * 0.55 * aspectLocal, y * 0.75, 0), t: Math.random() });
       }
-      assert(pts.length > 0, "Generated heart points");
       return pts;
     }
 
@@ -402,9 +255,8 @@
       const pts = shape.type === "heart" ? buildHeartPoints() : buildTextPoints(shape.text);
       for (let i = 0; i < particleCount; i++) {
         const src = pts[i % pts.length];
-        const targetPos = src.pos;
-        targets[i].copy(targetPos);
-        bases[i].copy(targetPos);
+        targets[i].copy(src.pos);
+        bases[i].copy(src.pos);
         const c = paletteColor(i + Math.floor((src.t || 0) * 10), shape.colors);
         colors[i * 3] = c.r;
         colors[i * 3 + 1] = c.g;
@@ -412,14 +264,7 @@
       }
       geometry.attributes.color.needsUpdate = true;
       currentMode = name;
-      const labelMap = {
-        idle: "IDLE",
-        love: "LOVE",
-        one: "LOVE YOU",
-        two: "© COPYRIGHT",
-        three: "DWI CUYY",
-        five: "LANJUT"
-      };
+      const labelMap = { idle: "IDLE", love: "LOVE", one: "LOVE YOU", two: "© COPYRIGHT", three: "DWI CUYY", five: "LANJUT" };
       modeText.textContent = `Mode: ${labelMap[name]}`;
       if (overlay) {
         if (name === "idle") overlay.classList.remove("hidden");
@@ -431,13 +276,9 @@
     function explodeShape(power = 1.0) {
       const swirl = (Math.random() * 0.4 + 0.8) * power;
       for (let i = 0; i < particleCount; i++) {
-        const px = positions[i * 3];
-        const py = positions[i * 3 + 1];
+        const px = positions[i * 3], py = positions[i * 3 + 1];
         const len = Math.hypot(px, py) || 0.0001;
-        const nx = px / len;
-        const ny = py / len;
-        const tx = -ny;
-        const ty = nx;
+        const nx = px / len, ny = py / len, tx = -ny, ty = nx;
         const speed = (Math.random() * 0.004 + 0.002) * power;
         velocities[i].x += (nx * 0.55 + tx * swirl * 0.45) * speed;
         velocities[i].y += (ny * 0.55 + ty * swirl * 0.45) * speed;
@@ -445,9 +286,7 @@
       reformTimer = performance.now() + 900;
     }
 
-    function isFingerUp(tip, pip, margin = 0.04) {
-      return tip.y < pip.y - margin;
-    }
+    function isFingerUp(tip, pip, margin = 0.04) { return tip.y < pip.y - margin; }
 
     function isThumbExtended(thumbTip, thumbIp) {
       const xSpread = Math.abs(thumbTip.x - thumbIp.x);
@@ -456,16 +295,9 @@
     }
 
     function detectGesture(hand) {
-      const thumbTip = hand[4];
-      const thumbIp = hand[3];
-      const indexTip = hand[8];
-      const middleTip = hand[12];
-      const ringTip = hand[16];
-      const pinkyTip = hand[20];
-      const indexPip = hand[6];
-      const middlePip = hand[10];
-      const ringPip = hand[14];
-      const pinkyPip = hand[18];
+      const thumbTip = hand[4], thumbIp = hand[3];
+      const indexTip = hand[8], middleTip = hand[12], ringTip = hand[16], pinkyTip = hand[20];
+      const indexPip = hand[6], middlePip = hand[10], ringPip = hand[14], pinkyPip = hand[18];
 
       const pinchDist = Math.hypot(indexTip.x - thumbTip.x, indexTip.y - thumbTip.y);
       if (pinchDist < 0.05) return "love";
@@ -485,83 +317,6 @@
       if (extendedAll >= 5 || (thumbUp && extendedNonThumb === 4)) return "five";
       return "idle";
     }
-
-    function runLogicChecks() {
-      const handOne = Array.from({ length: 21 }, () => ({ x: 0.5, y: 0.8 }));
-      handOne[8] = { x: 0.5, y: 0.2 };
-      handOne[6] = { x: 0.5, y: 0.45 };
-      handOne[12] = { x: 0.55, y: 0.8 };
-      handOne[10] = { x: 0.55, y: 0.6 };
-      handOne[16] = { x: 0.6, y: 0.82 };
-      handOne[14] = { x: 0.6, y: 0.65 };
-      handOne[20] = { x: 0.65, y: 0.85 };
-      handOne[18] = { x: 0.65, y: 0.67 };
-      handOne[4] = { x: 0.2, y: 0.5 };
-      handOne[3] = { x: 0.24, y: 0.48 };
-      assert(detectGesture(handOne) === "one", "Single raised index finger should resolve to one");
-
-      const handTwo = Array.from({ length: 21 }, () => ({ x: 0.5, y: 0.8 }));
-      handTwo[8] = { x: 0.44, y: 0.2 };
-      handTwo[6] = { x: 0.44, y: 0.46 };
-      handTwo[12] = { x: 0.56, y: 0.18 };
-      handTwo[10] = { x: 0.56, y: 0.46 };
-      handTwo[16] = { x: 0.62, y: 0.82 };
-      handTwo[14] = { x: 0.62, y: 0.64 };
-      handTwo[20] = { x: 0.68, y: 0.84 };
-      handTwo[18] = { x: 0.68, y: 0.66 };
-      handTwo[4] = { x: 0.24, y: 0.5 };
-      handTwo[3] = { x: 0.28, y: 0.48 };
-      assert(detectGesture(handTwo) === "two", "Raised index and middle fingers should resolve to two");
-
-      const handThree = Array.from({ length: 21 }, () => ({ x: 0.5, y: 0.8 }));
-      handThree[8] = { x: 0.40, y: 0.2 };
-      handThree[6] = { x: 0.40, y: 0.46 };
-      handThree[12] = { x: 0.52, y: 0.16 };
-      handThree[10] = { x: 0.52, y: 0.46 };
-      handThree[16] = { x: 0.64, y: 0.22 };
-      handThree[14] = { x: 0.64, y: 0.48 };
-      handThree[20] = { x: 0.74, y: 0.84 };
-      handThree[18] = { x: 0.74, y: 0.66 };
-      handThree[4] = { x: 0.22, y: 0.52 };
-      handThree[3] = { x: 0.26, y: 0.48 };
-      assert(detectGesture(handThree) === "three", "Raised index, middle, ring should resolve to three");
-
-      const handFive = Array.from({ length: 21 }, () => ({ x: 0.5, y: 0.8 }));
-      handFive[4] = { x: 0.22, y: 0.32 };
-      handFive[3] = { x: 0.28, y: 0.42 };
-      handFive[8] = { x: 0.38, y: 0.18 };
-      handFive[6] = { x: 0.38, y: 0.46 };
-      handFive[12] = { x: 0.50, y: 0.12 };
-      handFive[10] = { x: 0.50, y: 0.46 };
-      handFive[16] = { x: 0.62, y: 0.18 };
-      handFive[14] = { x: 0.62, y: 0.46 };
-      handFive[20] = { x: 0.74, y: 0.28 };
-      handFive[18] = { x: 0.74, y: 0.50 };
-      assert(detectGesture(handFive) === "five", "Open palm should resolve to five");
-
-      const handLove = Array.from({ length: 21 }, () => ({ x: 0.5, y: 0.5 }));
-      handLove[4] = { x: 0.45, y: 0.45 };
-      handLove[8] = { x: 0.47, y: 0.46 };
-      assert(detectGesture(handLove) === "love", "Pinch should resolve to love");
-
-      const handIdle = Array.from({ length: 21 }, () => ({ x: 0.5, y: 0.6 }));
-      handIdle[4] = { x: 0.46, y: 0.58 };
-      handIdle[3] = { x: 0.48, y: 0.56 };
-      handIdle[8] = { x: 0.5, y: 0.58 };
-      handIdle[6] = { x: 0.5, y: 0.56 };
-      handIdle[12] = { x: 0.54, y: 0.60 };
-      handIdle[10] = { x: 0.54, y: 0.58 };
-      handIdle[16] = { x: 0.58, y: 0.61 };
-      handIdle[14] = { x: 0.58, y: 0.59 };
-      handIdle[20] = { x: 0.62, y: 0.62 };
-      handIdle[18] = { x: 0.62, y: 0.60 };
-      assert(detectGesture(handIdle) === "idle", "Folded hand should resolve to idle");
-
-      assert(buildTextPoints("LANJUT").length > 0, "LANJUT text should generate points");
-      assert(buildHeartPoints().length > 0, "Heart shape should generate points");
-    }
-
-    runLogicChecks();
 
     async function initHandTracking() {
       if (handLandmarker) return handLandmarker;
@@ -599,11 +354,8 @@
         detectHands();
       } catch (err) {
         const name = String(err?.name || err);
-        if (name.includes("NotAllowedError")) {
-          setBadge("err", "Izin kamera ditolak", "Klik ikon kamera di address bar lalu ubah ke Allow.");
-        } else {
-          setBadge("err", "Gagal mengaktifkan kamera", "Refresh halaman lalu coba lagi.");
-        }
+        if (name.includes("NotAllowedError")) setBadge("err", "Izin kamera ditolak", "Klik ikon kamera di address bar lalu ubah ke Allow.");
+        else setBadge("err", "Gagal mengaktifkan kamera", "Refresh halaman lalu coba lagi.");
       }
     }
 
@@ -625,12 +377,8 @@
           pointer.active = true;
 
           const gesture = detectGesture(hand);
-          if (gesture === lastGesture) {
-            gestureHold++;
-          } else {
-            gestureHold = 0;
-            lastGesture = gesture;
-          }
+          if (gesture === lastGesture) gestureHold++;
+          else { gestureHold = 0; lastGesture = gesture; }
 
           if (gesture === "love" && pinchCooldown <= 0) {
             applyShape("love");
@@ -651,26 +399,21 @@
     function animate(now) {
       pointer.smoothX += (pointer.x - pointer.smoothX) * 0.18;
       pointer.smoothY += (pointer.y - pointer.smoothY) * 0.18;
-
       const pos = geometry.attributes.position.array;
-      for (let i = 0; i < particleCount; i++) {
-        const px = pos[i * 3];
-        const py = pos[i * 3 + 1];
-        const tx = targets[i].x;
-        const ty = targets[i].y;
 
+      for (let i = 0; i < particleCount; i++) {
+        const px = pos[i * 3], py = pos[i * 3 + 1];
+        const tx = targets[i].x, ty = targets[i].y;
         velocities[i].x += (tx - px) * 0.016;
         velocities[i].y += (ty - py) * 0.016;
 
         if (pointer.active) {
-          const dx = px - pointer.smoothX;
-          const dy = py - pointer.smoothY;
+          const dx = px - pointer.smoothX, dy = py - pointer.smoothY;
           const dist = Math.hypot(dx, dy) || 0.0001;
           const radius = 0.16;
           if (dist < radius) {
             const force = (radius - dist) / radius;
-            const swirlX = -dy / dist;
-            const swirlY = dx / dist;
+            const swirlX = -dy / dist, swirlY = dx / dist;
             velocities[i].x += (dx / dist) * force * 0.0022 + swirlX * force * 0.0010 + pointer.vx * 0.0010;
             velocities[i].y += (dy / dist) * force * 0.0022 + swirlY * force * 0.0010 + pointer.vy * 0.0010;
           }
@@ -680,16 +423,12 @@
         pos[i * 3] += velocities[i].x;
         pos[i * 3 + 1] += velocities[i].y;
       }
+
       geometry.attributes.position.needsUpdate = true;
 
-      if (explodeTimer && now > explodeTimer) {
-        explodeShape(0.82);
-        explodeTimer = 0;
-      }
+      if (explodeTimer && now > explodeTimer) { explodeShape(0.82); explodeTimer = 0; }
       if (reformTimer && now > reformTimer) {
-        for (let i = 0; i < particleCount; i++) {
-          targets[i].copy(bases[i]);
-        }
+        for (let i = 0; i < particleCount; i++) targets[i].copy(bases[i]);
         reformTimer = 0;
         if (overlay && currentMode === "idle") overlay.classList.remove("hidden");
       }
@@ -703,7 +442,6 @@
       if (overlay) overlay.classList.add("hidden");
       explodeShape(1.2);
     });
-
     startBtn.addEventListener("click", startCamera);
 
     window.addEventListener("resize", () => {
