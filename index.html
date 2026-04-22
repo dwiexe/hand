@@ -11,9 +11,9 @@
       height: 100%;
       overflow: hidden;
       background:
-        radial-gradient(circle at 50% 45%, rgba(99, 102, 241, 0.12), transparent 22%),
-        radial-gradient(circle at 30% 30%, rgba(236, 72, 153, 0.10), transparent 24%),
-        radial-gradient(circle at 70% 28%, rgba(34, 211, 238, 0.10), transparent 22%),
+        radial-gradient(circle at 50% 45%, rgba(99, 102, 241, 0.10), transparent 22%),
+        radial-gradient(circle at 30% 30%, rgba(236, 72, 153, 0.08), transparent 24%),
+        radial-gradient(circle at 70% 28%, rgba(34, 211, 238, 0.08), transparent 22%),
         radial-gradient(circle at center, #0b1020 0%, #020617 58%, #000 100%);
       font-family: Inter, Arial, sans-serif;
     }
@@ -35,7 +35,6 @@
       inset: 0;
       pointer-events: none;
       color: white;
-      opacity: 1;
       transition: opacity 0.3s ease;
     }
 
@@ -63,7 +62,7 @@
       position: absolute;
       left: 16px;
       bottom: 16px;
-      max-width: min(340px, calc(100vw - 32px));
+      max-width: min(350px, calc(100vw - 32px));
       padding: 16px;
       border-radius: 20px;
       background: rgba(8, 15, 30, 0.52);
@@ -163,6 +162,11 @@
       .hint {
         display: none;
       }
+      .controls {
+        max-width: calc(100vw - 24px);
+        left: 12px;
+        bottom: 12px;
+      }
     }
   </style>
 
@@ -184,7 +188,7 @@
 
     <div class="controls">
       <h1>Gesture Particle Magic Lite</h1>
-      <p>Versi ringan: pinch = love, 1 jari = LOVE YOU, 2 jari = © COPYRIGHT, 3 jari = DWI CUYY. Setelah muncul, partikel akan pecah estetik lalu nyusun lagi.</p>
+      <p>Pinch = tangan genggam. 1 jari = LOVE YOU. 2 jari = © COPYRIGHT. 3 jari = DWI CUYY. 5 jari = LANJUT.</p>
       <div class="buttons">
         <button id="startBtn" class="primary">Aktifkan Kamera</button>
         <button id="burstBtn" class="ghost">Burst</button>
@@ -195,10 +199,11 @@
     </div>
 
     <div class="hint">
-      Pinch (ibu jari + telunjuk) = heart.<br>
+      Pinch = tangan genggam.<br>
       1 jari = LOVE YOU.<br>
       2 jari = © COPYRIGHT.<br>
-      3 jari = DWI CUYY.
+      3 jari = DWI CUYY.<br>
+      5 jari = LANJUT.
     </div>
   </div>
 
@@ -220,22 +225,8 @@
     const modeText = document.getElementById("modeText");
 
     function assert(condition, message) {
-      if (!condition) {
-        throw new Error(`Smoke test failed: ${message}`);
-      }
+      if (!condition) throw new Error(`Smoke test failed: ${message}`);
     }
-
-    function runSmokeChecks() {
-      assert(typeof THREE.Scene === "function", "THREE.Scene should be available");
-      assert(typeof EffectComposer === "function", "EffectComposer should be available");
-      assert(typeof RenderPass === "function", "RenderPass should be available");
-      assert(typeof UnrealBloomPass === "function", "UnrealBloomPass should be available");
-      assert(typeof HandLandmarker === "function", "HandLandmarker should be available");
-      assert(app instanceof HTMLElement, "#app container should exist");
-      assert(video instanceof HTMLVideoElement, "#video element should exist");
-    }
-
-    runSmokeChecks();
 
     const scene = new THREE.Scene();
     const aspect = window.innerWidth / window.innerHeight;
@@ -243,7 +234,7 @@
     camera.position.z = 2;
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "high-performance" });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.6));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
     renderer.setSize(window.innerWidth, window.innerHeight);
     app.appendChild(renderer.domElement);
 
@@ -251,13 +242,13 @@
     composer.addPass(new RenderPass(scene, camera));
     const bloom = new UnrealBloomPass(
       new THREE.Vector2(window.innerWidth, window.innerHeight),
-      0.09,
-      0.14,
-      0.985
+      0.08,
+      0.12,
+      0.99
     );
     composer.addPass(bloom);
 
-    const particleCount = window.innerWidth < 768 ? 420 : 700;
+    const particleCount = window.innerWidth < 768 ? 520 : 820;
     const positions = new Float32Array(particleCount * 3);
     const colors = new Float32Array(particleCount * 3);
     const sizes = new Float32Array(particleCount);
@@ -270,9 +261,9 @@
       positions[i * 3] = (Math.random() - 0.5) * 1.8;
       positions[i * 3 + 1] = (Math.random() - 0.5) * 1.2;
       positions[i * 3 + 2] = 0;
-      sizes[i] = Math.random() * 2.2 + 1.2;
-      colors[i * 3] = 0.6;
-      colors[i * 3 + 1] = 0.7;
+      sizes[i] = Math.random() * 2 + 1.4;
+      colors[i * 3] = 0.9;
+      colors[i * 3 + 1] = 0.8;
       colors[i * 3 + 2] = 1.0;
     }
 
@@ -287,7 +278,7 @@
       vertexColors: true,
       uniforms: {
         uPixelRatio: { value: renderer.getPixelRatio() },
-        uSize: { value: 3.2 }
+        uSize: { value: 2.8 }
       },
       vertexShader: `
         attribute float aSize;
@@ -306,7 +297,7 @@
         void main() {
           float d = distance(gl_PointCoord, vec2(0.5));
           float strength = smoothstep(0.5, 0.0, d);
-          strength = pow(strength, 2.6);
+          strength = pow(strength, 2.8);
           gl_FragColor = vec4(vColor, strength);
         }
       `
@@ -336,11 +327,12 @@
     let reformTimer = 0;
 
     const SHAPES = {
-      idle: { type: "text", text: "DWI", colors: [0.52, 0.72, 1.0] },
-      love: { type: "heart", text: "", colors: [1.0, 0.42, 0.78] },
-      one: { type: "text", text: "LOVE YOU", colors: [0.84, 0.5, 1.0] },
-      two: { type: "text", text: "© COPYRIGHT", colors: [0.42, 0.78, 1.0] },
-      three: { type: "text", text: "DWI CUYY", colors: [0.34, 0.94, 0.88] }
+      idle:   { type: "text", text: "DWI",         colors: [[0.60,0.82,1.0],[0.75,0.60,1.0],[0.40,0.95,0.88]] },
+      fist:   { type: "heart", text: "", colors: [[1.0,0.45,0.65],[0.9,0.55,1.0],[0.6,0.8,1.0]] },
+      one:    { type: "text", text: "LOVE YOU",    colors: [[1.0,0.52,0.78],[0.80,0.62,1.0],[0.55,0.86,1.0]] },
+      two:    { type: "text", text: "© COPYRIGHT", colors: [[0.65,0.84,1.0],[0.88,0.88,1.0],[0.75,0.68,1.0]] },
+      three:  { type: "text", text: "DWI CUYY",    colors: [[0.42,0.94,0.90],[0.62,0.82,1.0],[0.74,0.56,1.0]] },
+      five:   { type: "text", text: "LANJUT",      colors: [[1.0,0.62,0.72],[0.90,0.82,0.35],[0.44,0.95,0.90],[0.55,0.78,1.0],[0.88,0.56,1.0]] }
     };
 
     function setBadge(mode, text, subtext) {
@@ -353,15 +345,20 @@
       return { x: window.innerWidth / window.innerHeight, y: 1 };
     }
 
+    function paletteColor(index, palette) {
+      const arr = palette[index % palette.length];
+      return { r: arr[0], g: arr[1], b: arr[2] };
+    }
+
     function buildTextPoints(text) {
       const off = document.createElement("canvas");
-      const w = 1200;
-      const h = 700;
+      const w = 1500;
+      const h = 760;
       off.width = w;
       off.height = h;
       const ctx = off.getContext("2d", { willReadFrequently: true });
       ctx.clearRect(0, 0, w, h);
-      const fontSize = text.length > 10 ? 130 : 180;
+      const fontSize = text.length > 10 ? 150 : 210;
       ctx.fillStyle = "white";
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
@@ -369,16 +366,19 @@
       ctx.fillText(text, w / 2, h / 2);
       const image = ctx.getImageData(0, 0, w, h).data;
       const pts = [];
-      const step = 9;
+      const step = 8;
       const scale = viewScale();
       for (let y = 0; y < h; y += step) {
         for (let x = 0; x < w; x += step) {
-          if (image[(y * w + x) * 4 + 3] > 30) {
-            pts.push(new THREE.Vector3(
-              ((x / w) - 0.5) * 1.4 * scale.x,
-              (0.5 - (y / h)) * 0.9,
-              0
-            ));
+          if (image[(y * w + x) * 4 + 3] > 40) {
+            pts.push({
+              pos: new THREE.Vector3(
+                ((x / w) - 0.5) * 1.55 * scale.x,
+                (0.5 - (y / h)) * 0.88,
+                0
+              ),
+              t: x / w
+            });
           }
         }
       }
@@ -388,27 +388,17 @@
 
     function buildHeartPoints() {
       const pts = [];
-      const aspect = window.innerWidth / window.innerHeight;
-      const xScale = 0.44 * Math.min(aspect, 1.8);
-      const yScale = 0.66;
+      const aspectLocal = Math.min(window.innerWidth / window.innerHeight, 1.8);
 
-      while (pts.length < 760) {
+      while (pts.length < 700) {
         const x = (Math.random() * 2 - 1) * 1.2;
         const y = (Math.random() * 2 - 1) * 1.2;
         const eq = Math.pow(x * x + y * y - 1, 3) - x * x * Math.pow(y, 3);
         if (eq <= 0) {
-          pts.push(new THREE.Vector3(x * xScale, y * yScale * 0.95, 0));
+          pts.push({ pos: new THREE.Vector3(x * 0.55 * aspectLocal, y * 0.75, 0), t: Math.random() });
         }
       }
 
-      for (let i = 0; i < 260; i++) {
-        const t = (i / 260) * Math.PI * 2;
-        const hx = 16 * Math.pow(Math.sin(t), 3);
-        const hy = 13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t);
-        pts.push(new THREE.Vector3(hx * 0.026 * Math.min(aspect, 1.8), hy * 0.026 * 0.82, 0));
-      }
-
-      assert(pts.length > 700, "Heart shape should generate enough points");
       return pts;
     }
 
@@ -417,28 +407,34 @@
       const pts = shape.type === "heart" ? buildHeartPoints() : buildTextPoints(shape.text);
       for (let i = 0; i < particleCount; i++) {
         const src = pts[i % pts.length];
-        targets[i].copy(src);
-        bases[i].copy(src);
-        colors[i * 3] = shape.colors[0];
-        colors[i * 3 + 1] = shape.colors[1];
-        colors[i * 3 + 2] = shape.colors[2];
+        const targetPos = src.pos || src;
+        targets[i].copy(targetPos);
+        bases[i].copy(targetPos);
+        const c = paletteColor(i + Math.floor((src.t || 0) * 10), shape.colors);
+        colors[i * 3] = c.r;
+        colors[i * 3 + 1] = c.g;
+        colors[i * 3 + 2] = c.b;
       }
       geometry.attributes.color.needsUpdate = true;
       currentMode = name;
       const labelMap = {
         idle: "IDLE",
-        love: "LOVE",
+        fist: "TANGAN GENGGAM",
         one: "LOVE YOU",
         two: "© COPYRIGHT",
-        three: "DWI CUYY"
+        three: "DWI CUYY",
+        five: "LANJUT"
       };
       modeText.textContent = `Mode: ${labelMap[name]}`;
-      
+      if (overlay) {
+        if (name === "idle") overlay.classList.remove("hidden");
+        else overlay.classList.add("hidden");
+      }
       explodeTimer = performance.now() + 2300;
     }
 
     function explodeShape(power = 1.0) {
-      const swirl = (Math.random() * 0.5 + 0.75) * power;
+      const swirl = (Math.random() * 0.4 + 0.8) * power;
       for (let i = 0; i < particleCount; i++) {
         const px = positions[i * 3];
         const py = positions[i * 3 + 1];
@@ -447,7 +443,7 @@
         const ny = py / len;
         const tx = -ny;
         const ty = nx;
-        const speed = (Math.random() * 0.0045 + 0.0025) * power;
+        const speed = (Math.random() * 0.004 + 0.002) * power;
         velocities[i].x += (nx * 0.55 + tx * swirl * 0.45) * speed;
         velocities[i].y += (ny * 0.55 + ty * swirl * 0.45) * speed;
       }
@@ -460,6 +456,7 @@
 
     function detectGesture(hand) {
       const thumbTip = hand[4];
+      const thumbIp = hand[3];
       const indexTip = hand[8];
       const middleTip = hand[12];
       const ringTip = hand[16];
@@ -470,31 +467,29 @@
       const pinkyPip = hand[18];
 
       const pinchDist = Math.hypot(indexTip.x - thumbTip.x, indexTip.y - thumbTip.y);
-      if (pinchDist < 0.05) return "love";
+      if (pinchDist < 0.05) return "fist";
 
       const indexUp = isFingerUp(indexTip, indexPip);
       const middleUp = isFingerUp(middleTip, middlePip);
       const ringUp = isFingerUp(ringTip, ringPip);
       const pinkyUp = isFingerUp(pinkyTip, pinkyPip);
+      const thumbUp = thumbTip.y < thumbIp.y - 0.02 || thumbTip.x < thumbIp.x - 0.02;
 
       let count = 0;
       if (indexUp) count++;
       if (middleUp) count++;
       if (ringUp) count++;
       if (pinkyUp) count++;
+      if (thumbUp) count++;
 
       if (count === 1 && indexUp) return "one";
       if (count === 2 && indexUp && middleUp) return "two";
       if (count === 3 && indexUp && middleUp && ringUp) return "three";
+      if (count >= 5) return "five";
       return "idle";
     }
 
     function runLogicChecks() {
-      const fakeHand = Array.from({ length: 21 }, () => ({ x: 0.5, y: 0.7 }));
-      fakeHand[4] = { x: 0.4, y: 0.4 };
-      fakeHand[8] = { x: 0.41, y: 0.41 };
-      assert(detectGesture(fakeHand) === "love", "Pinch should resolve to love");
-
       const handOne = Array.from({ length: 21 }, () => ({ x: 0.5, y: 0.8 }));
       handOne[8] = { x: 0.5, y: 0.2 };
       handOne[6] = { x: 0.5, y: 0.45 };
@@ -505,9 +500,28 @@
       handOne[20] = { x: 0.65, y: 0.85 };
       handOne[18] = { x: 0.65, y: 0.67 };
       handOne[4] = { x: 0.2, y: 0.5 };
+      handOne[3] = { x: 0.24, y: 0.48 };
       assert(detectGesture(handOne) === "one", "Single raised index finger should resolve to one");
 
-      assert(buildTextPoints("LOVE YOU").length > 0, "Text shape should generate points");
+      const handFive = Array.from({ length: 21 }, () => ({ x: 0.5, y: 0.8 }));
+      handFive[4] = { x: 0.22, y: 0.32 };
+      handFive[3] = { x: 0.28, y: 0.42 };
+      handFive[8] = { x: 0.38, y: 0.18 };
+      handFive[6] = { x: 0.38, y: 0.46 };
+      handFive[12] = { x: 0.50, y: 0.12 };
+      handFive[10] = { x: 0.50, y: 0.46 };
+      handFive[16] = { x: 0.62, y: 0.18 };
+      handFive[14] = { x: 0.62, y: 0.46 };
+      handFive[20] = { x: 0.74, y: 0.28 };
+      handFive[18] = { x: 0.74, y: 0.50 };
+      assert(detectGesture(handFive) === "five", "Open palm should resolve to five");
+
+      const handFist = Array.from({ length: 21 }, () => ({ x: 0.5, y: 0.5 }));
+      handFist[4] = { x: 0.45, y: 0.45 };
+      handFist[8] = { x: 0.47, y: 0.46 };
+      assert(detectGesture(handFist) === "fist", "Pinch should resolve to fist");
+
+      assert(buildTextPoints("LANJUT").length > 0, "LANJUT text should generate points");
       assert(buildHeartPoints().length > 0, "Heart shape should generate points");
     }
 
@@ -581,11 +595,11 @@
             lastGesture = gesture;
           }
 
-          if (gesture === "love" && pinchCooldown <= 0) {
-            applyShape("love");
-            explodeShape(0.65);
+          if (gesture === "fist" && pinchCooldown <= 0) {
+            applyShape("fist");
+            explodeShape(0.72);
             pinchCooldown = 20;
-          } else if (gesture !== "love" && gestureHold > 6 && gesture !== currentMode) {
+          } else if (gesture !== "fist" && gestureHold > 6 && gesture !== currentMode) {
             applyShape(gesture);
           }
         } else {
@@ -608,8 +622,8 @@
         const tx = targets[i].x;
         const ty = targets[i].y;
 
-        velocities[i].x += (tx - px) * 0.014;
-        velocities[i].y += (ty - py) * 0.014;
+        velocities[i].x += (tx - px) * 0.016;
+        velocities[i].y += (ty - py) * 0.016;
 
         if (pointer.active) {
           const dx = px - pointer.smoothX;
@@ -620,8 +634,8 @@
             const force = (radius - dist) / radius;
             const swirlX = -dy / dist;
             const swirlY = dx / dist;
-            velocities[i].x += (dx / dist) * force * 0.0023 + swirlX * force * 0.0012 + pointer.vx * 0.0011;
-            velocities[i].y += (dy / dist) * force * 0.0023 + swirlY * force * 0.0012 + pointer.vy * 0.0011;
+            velocities[i].x += (dx / dist) * force * 0.0022 + swirlX * force * 0.0010 + pointer.vx * 0.0010;
+            velocities[i].y += (dy / dist) * force * 0.0022 + swirlY * force * 0.0010 + pointer.vy * 0.0010;
           }
         }
 
@@ -640,9 +654,7 @@
           targets[i].copy(bases[i]);
         }
         reformTimer = 0;
-        if (overlay && currentMode === "idle") {
-          overlay.classList.remove("hidden");
-        }
+        if (overlay && currentMode === "idle") overlay.classList.remove("hidden");
       }
       if (pinchCooldown > 0) pinchCooldown--;
 
@@ -659,7 +671,7 @@
     window.addEventListener("resize", () => {
       const newAspect = window.innerWidth / window.innerHeight;
       renderer.setSize(window.innerWidth, window.innerHeight);
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.6));
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
       composer.setSize(window.innerWidth, window.innerHeight);
       bloom.setSize(window.innerWidth, window.innerHeight);
       material.uniforms.uPixelRatio.value = renderer.getPixelRatio();
