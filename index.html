@@ -35,16 +35,43 @@
       inset: 0;
       pointer-events: none;
       color: white;
-      opacity: 0; /* selalu hidden untuk mode TikTok */
+      opacity: 1;
+      transition: opacity 0.3s ease;
     }
 
     .overlay.hidden {
       opacity: 0;
     }
 
-    .topbar { display:none; }
+    .topbar {
+      position: absolute;
+      top: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.06);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.08);
+      font-size: 11px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.62);
+    }
 
-    .controls { display:none; }
+    .controls {
+      position: absolute;
+      left: 16px;
+      bottom: 16px;
+      max-width: min(340px, calc(100vw - 32px));
+      padding: 16px;
+      border-radius: 20px;
+      background: rgba(8, 15, 30, 0.52);
+      backdrop-filter: blur(14px);
+      border: 1px solid rgba(255,255,255,0.12);
+      pointer-events: auto;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.28);
+    }
 
     .controls h1 {
       margin: 0 0 8px;
@@ -117,7 +144,20 @@
     .dot.ok { background: #34d399; }
     .dot.err { background: #fb7185; }
 
-    .hint { display:none; }
+    .hint {
+      position: absolute;
+      right: 16px;
+      bottom: 16px;
+      max-width: min(320px, calc(100vw - 32px));
+      padding: 14px 16px;
+      border-radius: 18px;
+      background: rgba(8, 15, 30, 0.44);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: rgba(255,255,255,0.76);
+      line-height: 1.55;
+      font-size: 13px;
+    }
 
     @media (max-width: 760px) {
       .hint {
