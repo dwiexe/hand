@@ -3,19 +3,15 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Hand Aura Particles</title>
+  <title>Gesture Particle Text</title>
   <style>
     :root {
-      --bg1: #030712;
+      --bg1: #020617;
       --bg2: #0f172a;
       --panel: rgba(255,255,255,0.08);
-      --panel-border: rgba(255,255,255,0.14);
-      --text: rgba(255,255,255,0.95);
-      --muted: rgba(255,255,255,0.7);
-      --accent: #7dd3fc;
-      --accent-2: #c084fc;
-      --accent-3: #67e8f9;
-      --danger: #fb7185;
+      --panel-border: rgba(255,255,255,0.12);
+      --text: rgba(255,255,255,0.96);
+      --muted: rgba(255,255,255,0.72);
     }
 
     * { box-sizing: border-box; }
@@ -25,11 +21,12 @@
       width: 100%;
       height: 100%;
       overflow: hidden;
+      font-family: Inter, Arial, sans-serif;
       background:
-        radial-gradient(circle at top, rgba(125,211,252,0.12), transparent 30%),
-        radial-gradient(circle at 80% 20%, rgba(192,132,252,0.14), transparent 25%),
+        radial-gradient(circle at 20% 20%, rgba(59,130,246,0.18), transparent 25%),
+        radial-gradient(circle at 80% 15%, rgba(168,85,247,0.18), transparent 25%),
+        radial-gradient(circle at 50% 80%, rgba(236,72,153,0.16), transparent 28%),
         linear-gradient(160deg, var(--bg1), var(--bg2));
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       color: var(--text);
     }
 
@@ -51,130 +48,148 @@
       display: none;
     }
 
-    .ui {
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-    }
-
     .panel {
-      pointer-events: auto;
       position: absolute;
       left: 18px;
       top: 18px;
       width: min(360px, calc(100vw - 36px));
-      padding: 16px;
-      border-radius: 20px;
-      backdrop-filter: blur(16px);
+      padding: 18px;
+      border-radius: 22px;
       background: var(--panel);
+      backdrop-filter: blur(16px);
       border: 1px solid var(--panel-border);
-      box-shadow: 0 10px 40px rgba(0,0,0,0.35);
+      box-shadow: 0 18px 50px rgba(0,0,0,0.3);
+      z-index: 3;
     }
 
     .panel h1 {
-      margin: 0 0 8px;
+      margin: 0 0 10px;
       font-size: 20px;
       line-height: 1.2;
-      letter-spacing: 0.2px;
     }
 
     .panel p {
       margin: 0;
       color: var(--muted);
+      line-height: 1.55;
       font-size: 14px;
-      line-height: 1.5;
     }
 
     .actions {
       display: flex;
       gap: 10px;
-      margin-top: 14px;
       flex-wrap: wrap;
+      margin-top: 15px;
     }
 
     button {
       border: 0;
-      outline: none;
       cursor: pointer;
-      padding: 11px 14px;
       border-radius: 14px;
-      font-weight: 700;
+      padding: 12px 16px;
       font-size: 14px;
-      transition: transform 0.18s ease, opacity 0.18s ease, box-shadow 0.18s ease;
+      font-weight: 800;
+      transition: transform 0.18s ease, opacity 0.18s ease;
     }
 
     button:hover { transform: translateY(-1px); }
     button:active { transform: translateY(1px) scale(0.99); }
 
     .primary {
-      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      background: linear-gradient(135deg, #7dd3fc, #c084fc);
       color: #08111f;
-      box-shadow: 0 8px 30px rgba(125,211,252,0.28);
     }
 
     .secondary {
-      color: var(--text);
       background: rgba(255,255,255,0.08);
+      color: white;
       border: 1px solid rgba(255,255,255,0.12);
-    }
-
-    .status {
-      margin-top: 12px;
-      font-size: 13px;
-      color: var(--muted);
     }
 
     .badge {
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      padding: 7px 10px;
-      margin-top: 10px;
+      margin-top: 12px;
+      padding: 8px 11px;
       border-radius: 999px;
       background: rgba(255,255,255,0.08);
-      font-size: 12px;
-      color: var(--text);
+      font-size: 13px;
     }
 
     .dot {
-      width: 9px;
-      height: 9px;
-      border-radius: 999px;
-      background: #fbbf24;
-      box-shadow: 0 0 16px currentColor;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #f59e0b;
+      box-shadow: 0 0 12px currentColor;
     }
 
     .dot.ok { background: #34d399; }
-    .dot.err { background: var(--danger); }
+    .dot.err { background: #fb7185; }
 
-    .tips {
+    .status {
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .guide {
       position: absolute;
       right: 18px;
       bottom: 18px;
-      max-width: 320px;
-      padding: 14px 16px;
-      border-radius: 18px;
-      backdrop-filter: blur(16px);
+      width: min(360px, calc(100vw - 36px));
+      padding: 18px;
+      border-radius: 22px;
       background: rgba(255,255,255,0.06);
+      backdrop-filter: blur(16px);
       border: 1px solid rgba(255,255,255,0.1);
+      z-index: 3;
       color: var(--muted);
-      font-size: 13px;
-      line-height: 1.55;
+      font-size: 14px;
+      line-height: 1.65;
     }
 
-    .tips strong { color: var(--text); }
+    .guide strong {
+      color: white;
+    }
 
-    @media (max-width: 700px) {
-      .panel {
-        left: 12px;
-        top: 12px;
+    .mode {
+      margin-top: 10px;
+      color: white;
+      font-weight: 800;
+      font-size: 15px;
+    }
+
+    .center-label {
+      position: absolute;
+      left: 50%;
+      top: 9%;
+      transform: translateX(-50%);
+      color: rgba(255,255,255,0.18);
+      font-size: clamp(16px, 2vw, 22px);
+      font-weight: 900;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    @media (max-width: 760px) {
+      .panel, .guide {
         width: calc(100vw - 24px);
-      }
-      .tips {
         left: 12px;
         right: 12px;
+      }
+
+      .guide {
+        top: auto;
         bottom: 12px;
-        max-width: none;
+      }
+
+      .panel {
+        top: 12px;
       }
     }
   </style>
@@ -184,30 +199,40 @@
     <video id="video" autoplay playsinline muted></video>
     <canvas id="canvas"></canvas>
 
-    <div class="ui">
-      <div class="panel">
-        <h1>Hand Aura Particles</h1>
-        <p>
-          Demo interaktif berbasis HTML yang bisa di-upload ke GitHub Pages. Gerakkan tangan ke kamera untuk mendorong, menarik, dan meledakkan partikel.
-        </p>
+    <div class="center-label" id="centerLabel">GESTURE PARTICLE MAGIC</div>
 
-        <div class="actions">
-          <button id="startBtn" class="primary">Aktifkan Kamera</button>
-          <button id="burstBtn" class="secondary">Burst</button>
-        </div>
+    <div class="panel">
+      <h1>Gesture Particle Magic</h1>
+      <p>
+        Pinch = love. 1 jari = LOVE YOU GUYS. 2 jari = © COPYRIGHT.
+        3 jari = DWI CUYY. Partikel akan membentuk simbol/tulisan lalu pecah estetik.
+      </p>
 
-        <div class="badge"><span id="dot" class="dot"></span><span id="badgeText">Menunggu izin kamera</span></div>
-        <div id="status" class="status">Tips: buka lewat HTTPS atau localhost supaya izin kamera muncul normal.</div>
+      <div class="actions">
+        <button id="startBtn" class="primary">Aktifkan Kamera</button>
+        <button id="explodeBtn" class="secondary">Pecah</button>
       </div>
 
-      <div class="tips">
-        <strong>Cara pakai:</strong><br>
-        1. Klik <strong>Aktifkan Kamera</strong><br>
-        2. Browser akan menampilkan popup izin kamera<br>
-        3. Tekan <strong>Allow / Izinkan</strong><br>
-        4. Ujung telunjuk akan jadi kontrol partikel<br><br>
-        Cubit jempol + telunjuk untuk efek ledakan.
+      <div class="badge">
+        <span id="dot" class="dot"></span>
+        <span id="badgeText">Menunggu izin kamera</span>
       </div>
+
+      <div class="status" id="status">
+        Buka lewat HTTPS atau GitHub Pages supaya izin kamera muncul normal.
+      </div>
+
+      <div class="mode" id="modeText">Mode: IDLE</div>
+    </div>
+
+    <div class="guide">
+      <strong>Cara pakai:</strong><br>
+      1. Klik <strong>Aktifkan Kamera</strong><br>
+      2. Izinkan akses kamera<br>
+      3. <strong>Pinch</strong> (ibu jari + telunjuk rapat) = LOVE<br>
+      4. <strong>1 jari</strong> = LOVE YOU GUYS<br>
+      5. <strong>2 jari</strong> = © COPYRIGHT<br>
+      6. <strong>3 jari</strong> = DWI CUYY
     </div>
   </div>
 
@@ -221,22 +246,16 @@
     const ctx = canvas.getContext("2d");
     const video = document.getElementById("video");
     const startBtn = document.getElementById("startBtn");
-    const burstBtn = document.getElementById("burstBtn");
-    const statusEl = document.getElementById("status");
-    const badgeText = document.getElementById("badgeText");
+    const explodeBtn = document.getElementById("explodeBtn");
     const dot = document.getElementById("dot");
+    const badgeText = document.getElementById("badgeText");
+    const statusEl = document.getElementById("status");
+    const modeText = document.getElementById("modeText");
+    const centerLabel = document.getElementById("centerLabel");
 
     let width = window.innerWidth;
     let height = window.innerHeight;
-    let handLandmarker = null;
-    let cameraStarted = false;
-    let lastVideoTime = -1;
-    let pinchCooldown = 0;
-
     const DPR = Math.min(window.devicePixelRatio || 1, 2);
-    canvas.width = width * DPR;
-    canvas.height = height * DPR;
-    ctx.scale(DPR, DPR);
 
     function resizeCanvas() {
       width = window.innerWidth;
@@ -246,30 +265,76 @@
       ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
     }
 
-    const DISPLAY_TEXT = "AURA";
+    resizeCanvas();
 
-    function getTextTargets(text) {
+    let handLandmarker = null;
+    let cameraStarted = false;
+    let lastVideoTime = -1;
+
+    const pointer = {
+      x: width / 2,
+      y: height / 2,
+      smoothX: width / 2,
+      smoothY: height / 2,
+      vx: 0,
+      vy: 0,
+      active: false
+    };
+
+    const palette = {
+      love: [330, 340, 320],
+      one: [290, 270, 310],
+      two: [220, 210, 240],
+      three: [185, 195, 175],
+      idle: [240, 280, 200]
+    };
+
+    let currentMode = "idle";
+    let currentShapeKey = "TEXT:DWIZY";
+    let reformAt = 0;
+    let autoBurstAt = 0;
+    let gestureHold = 0;
+    let lastGesture = "idle";
+    let pinchCooldown = 0;
+
+    function setBadge(mode, text, statusText) {
+      dot.className = `dot ${mode}`;
+      badgeText.textContent = text;
+      if (statusText) statusEl.textContent = statusText;
+    }
+
+    function randomHue(mode) {
+      const arr = palette[mode] || palette.idle;
+      return arr[Math.floor(Math.random() * arr.length)] + Math.random() * 12 - 6;
+    }
+
+    function makeShapeTargets(key) {
       const off = document.createElement("canvas");
       const octx = off.getContext("2d", { willReadFrequently: true });
-      off.width = Math.max(1200, Math.floor(width));
-      off.height = Math.max(700, Math.floor(height));
-
+      off.width = Math.max(1400, Math.floor(width));
+      off.height = Math.max(900, Math.floor(height));
       octx.clearRect(0, 0, off.width, off.height);
-      const fontSize = Math.min(off.width * 0.16, off.height * 0.28);
+
+      const isLove = key === "LOVE_SYMBOL";
+      const text = isLove ? "❤" : key.replace(/^TEXT:/, "");
+      const fontSize = isLove
+        ? Math.min(off.width * 0.28, off.height * 0.42)
+        : Math.min(off.width * 0.13, off.height * 0.18);
+
       octx.fillStyle = "white";
       octx.textAlign = "center";
       octx.textBaseline = "middle";
-      octx.font = `900 ${fontSize}px Inter, Arial, sans-serif`;
+      octx.font = `900 ${fontSize}px Arial Black, Inter, Arial, sans-serif`;
       octx.fillText(text, off.width / 2, off.height / 2);
 
-      const img = octx.getImageData(0, 0, off.width, off.height).data;
+      const image = octx.getImageData(0, 0, off.width, off.height).data;
       const points = [];
-      const gap = Math.max(9, Math.floor(fontSize / 18));
+      const gap = isLove ? 6 : Math.max(5, Math.floor(fontSize / 26));
 
       for (let y = 0; y < off.height; y += gap) {
         for (let x = 0; x < off.width; x += gap) {
-          const a = img[(y * off.width + x) * 4 + 3];
-          if (a > 30) {
+          const alpha = image[(y * off.width + x) * 4 + 3];
+          if (alpha > 30) {
             points.push({
               x: (x / off.width) * width,
               y: (y / off.height) * height
@@ -281,100 +346,96 @@
       return points;
     }
 
-    let textTargets = getTextTargets(DISPLAY_TEXT);
-
-    const pointer = {
-      x: width / 2,
-      y: height / 2,
-      prevX: width / 2,
-      prevY: height / 2,
-      smoothX: width / 2,
-      smoothY: height / 2,
-      vx: 0,
-      vy: 0,
-      pinch: false,
-      active: false,
-      energy: 0
-    };
+    let shapeTargets = makeShapeTargets(currentShapeKey);
 
     class Particle {
-      constructor() {
-        this.seed();
+      constructor(index) {
+        this.index = index;
+        this.reset(true);
       }
 
-      seed() {
-        const target = textTargets.length
-          ? textTargets[Math.floor(Math.random() * textTargets.length)]
-          : { x: width / 2, y: height / 2 };
+      assignTarget() {
+        if (!shapeTargets.length) return { x: width / 2, y: height / 2 };
+        return shapeTargets[this.index % shapeTargets.length];
+      }
 
-        this.baseX = target.x + (Math.random() - 0.5) * 10;
-        this.baseY = target.y + (Math.random() - 0.5) * 10;
-        this.x = this.baseX + (Math.random() - 0.5) * 180;
-        this.y = this.baseY + (Math.random() - 0.5) * 180;
-        this.vx = 0;
-        this.vy = 0;
-        this.size = Math.random() * 2.4 + 0.6;
-        this.alpha = Math.random() * 0.65 + 0.2;
-        this.hue = 190 + Math.random() * 120;
+      reset(initial = false) {
+        const t = this.assignTarget();
+        this.baseX = t.x;
+        this.baseY = t.y;
+        this.x = initial ? Math.random() * width : this.baseX + (Math.random() - 0.5) * 200;
+        this.y = initial ? Math.random() * height : this.baseY + (Math.random() - 0.5) * 200;
+        this.vx = (Math.random() - 0.5) * 2;
+        this.vy = (Math.random() - 0.5) * 2;
+        this.size = Math.random() * 2.2 + 0.8;
+        this.alpha = Math.random() * 0.6 + 0.25;
+        this.hue = randomHue(currentMode);
       }
 
       update() {
-        const returnForce = 0.004;
-        this.vx += (this.baseX - this.x) * returnForce;
-        this.vy += (this.baseY - this.y) * returnForce;
+        const t = this.assignTarget();
+        this.baseX += (t.x - this.baseX) * 0.14;
+        this.baseY += (t.y - this.baseY) * 0.14;
+
+        this.vx += (this.baseX - this.x) * 0.012;
+        this.vy += (this.baseY - this.y) * 0.012;
 
         if (pointer.active) {
           const dx = this.x - pointer.smoothX;
           const dy = this.y - pointer.smoothY;
           const dist = Math.hypot(dx, dy) || 0.001;
-          const radius = pointer.pinch ? 220 : 170;
+          const radius = 135;
 
           if (dist < radius) {
             const force = (radius - dist) / radius;
             const nx = dx / dist;
             const ny = dy / dist;
-
-            const push = pointer.pinch ? -1.3 : 1.2;
-            this.vx += nx * force * push;
-            this.vy += ny * force * push;
-
-            this.vx += pointer.vx * 0.012 * force;
-            this.vy += pointer.vy * 0.012 * force;
+            this.vx += nx * force * 1.8;
+            this.vy += ny * force * 1.8;
+            this.vx += pointer.vx * 0.01 * force;
+            this.vy += pointer.vy * 0.01 * force;
           }
         }
 
-        this.vx *= 0.94;
-        this.vy *= 0.94;
+        this.vx *= 0.92;
+        this.vy *= 0.92;
         this.x += this.vx;
         this.y += this.vy;
       }
 
       draw() {
-        const glow = pointer.active ? Math.min(pointer.energy * 0.08, 0.35) : 0;
         ctx.beginPath();
-        ctx.fillStyle = `hsla(${this.hue}, 100%, 72%, ${this.alpha + glow})`;
+        ctx.fillStyle = `hsla(${this.hue}, 100%, 70%, ${this.alpha})`;
+        ctx.shadowBlur = 14;
+        ctx.shadowColor = `hsla(${this.hue}, 100%, 65%, 0.7)`;
         ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
         ctx.fill();
+        ctx.shadowBlur = 0;
       }
     }
 
-    const PARTICLE_COUNT = window.innerWidth < 768 ? 320 : 520;
-    const particles = Array.from({ length: PARTICLE_COUNT }, () => new Particle());
+    const particles = Array.from({ length: 1400 }, (_, i) => new Particle(i));
     const sparks = [];
 
-    function spawnBurst(x, y, power = 1) {
-      const count = Math.floor(24 * power);
-      for (let i = 0; i < count; i++) {
+    function burst(power = 1.6) {
+      for (const p of particles) {
         const angle = Math.random() * Math.PI * 2;
-        const speed = (Math.random() * 5 + 1.5) * power;
+        const speed = (Math.random() * 6 + 1.5) * power;
+        p.vx += Math.cos(angle) * speed;
+        p.vy += Math.sin(angle) * speed;
+      }
+
+      for (let i = 0; i < 160; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        const speed = Math.random() * 8 + 2;
         sparks.push({
-          x,
-          y,
+          x: width / 2 + (Math.random() - 0.5) * 60,
+          y: height / 2 + (Math.random() - 0.5) * 60,
           vx: Math.cos(angle) * speed,
           vy: Math.sin(angle) * speed,
           life: 1,
-          size: Math.random() * 3 + 1,
-          hue: 190 + Math.random() * 120
+          size: Math.random() * 3.5 + 1.2,
+          hue: randomHue(currentMode)
         });
       }
     }
@@ -395,23 +456,26 @@
       for (const s of sparks) {
         ctx.beginPath();
         ctx.fillStyle = `hsla(${s.hue}, 100%, 70%, ${s.life})`;
+        ctx.shadowBlur = 18;
+        ctx.shadowColor = `hsla(${s.hue}, 100%, 65%, 0.9)`;
         ctx.arc(s.x, s.y, s.size * s.life, 0, Math.PI * 2);
         ctx.fill();
       }
+      ctx.shadowBlur = 0;
     }
 
     function drawConnections() {
-      const maxDist = 48;
-      for (let i = 0; i < particles.length; i += 8) {
+      const maxDist = 55;
+      for (let i = 0; i < particles.length; i += 3) {
         const a = particles[i];
-        for (let j = i + 1; j < Math.min(i + 4, particles.length); j++) {
+        for (let j = i + 1; j < Math.min(i + 8, particles.length); j++) {
           const b = particles[j];
           const dx = a.x - b.x;
           const dy = a.y - b.y;
           const dist = Math.hypot(dx, dy);
           if (dist < maxDist) {
             ctx.beginPath();
-            ctx.strokeStyle = `rgba(180, 235, 255, ${0.04 * (1 - dist / maxDist)})`;
+            ctx.strokeStyle = `rgba(255,255,255,${0.06 * (1 - dist / maxDist)})`;
             ctx.lineWidth = 1;
             ctx.moveTo(a.x, a.y);
             ctx.lineTo(b.x, b.y);
@@ -421,52 +485,121 @@
       }
     }
 
-    function drawAura() {
-      if (!pointer.active) return;
-      const grad = ctx.createRadialGradient(
-        pointer.smoothX,
-        pointer.smoothY,
-        10,
-        pointer.smoothX,
-        pointer.smoothY,
-        pointer.pinch ? 150 : 120
-      );
-      grad.addColorStop(0, pointer.pinch ? "rgba(251, 113, 133, 0.30)" : "rgba(103, 232, 249, 0.26)");
-      grad.addColorStop(0.4, pointer.pinch ? "rgba(192, 132, 252, 0.16)" : "rgba(125, 211, 252, 0.14)");
-      grad.addColorStop(1, "rgba(0,0,0,0)");
-      ctx.beginPath();
-      ctx.fillStyle = grad;
-      ctx.arc(pointer.smoothX, pointer.smoothY, pointer.pinch ? 150 : 120, 0, Math.PI * 2);
-      ctx.fill();
+    function updateShape(shapeKey, modeName, label) {
+      currentShapeKey = shapeKey;
+      currentMode = modeName;
+      shapeTargets = makeShapeTargets(shapeKey);
 
-      ctx.beginPath();
-      ctx.strokeStyle = pointer.pinch ? "rgba(251,113,133,0.55)" : "rgba(125,211,252,0.45)";
-      ctx.lineWidth = 1.5;
-      ctx.arc(pointer.smoothX, pointer.smoothY, pointer.pinch ? 34 : 24, 0, Math.PI * 2);
-      ctx.stroke();
+      for (const p of particles) {
+        p.hue = randomHue(modeName);
+      }
+
+      centerLabel.textContent = label;
+      modeText.textContent = `Mode: ${label}`;
+      reformAt = performance.now() + 900;
+      autoBurstAt = performance.now() + 3200;
     }
 
-    function animate() {
+    function triggerMode(modeName) {
+      if (modeName === "love") {
+        updateShape("LOVE_SYMBOL", "love", "LOVE");
+      } else if (modeName === "one") {
+        updateShape("TEXT:LOVE YOU GUYS", "one", "LOVE YOU GUYS");
+      } else if (modeName === "two") {
+        updateShape("TEXT:© COPYRIGHT", "two", "© COPYRIGHT");
+      } else if (modeName === "three") {
+        updateShape("TEXT:DWI CUYY", "three", "DWI CUYY");
+      } else {
+        updateShape("TEXT:DWIZY", "idle", "IDLE");
+      }
+    }
+
+    function reformParticles() {
+      for (const p of particles) {
+        const t = p.assignTarget();
+        p.baseX = t.x;
+        p.baseY = t.y;
+      }
+    }
+
+    function animate(time) {
       ctx.clearRect(0, 0, width, height);
 
       pointer.smoothX += (pointer.x - pointer.smoothX) * 0.22;
       pointer.smoothY += (pointer.y - pointer.smoothY) * 0.22;
-      pointer.energy = Math.min(Math.hypot(pointer.vx, pointer.vy), 80);
 
-      drawAura();
+      const glow = ctx.createRadialGradient(
+        width / 2, height / 2, 50,
+        width / 2, height / 2, Math.min(width, height) * 0.35
+      );
+      glow.addColorStop(0, "rgba(255,255,255,0.05)");
+      glow.addColorStop(0.35, "rgba(120,119,255,0.04)");
+      glow.addColorStop(1, "rgba(0,0,0,0)");
+      ctx.fillStyle = glow;
+      ctx.fillRect(0, 0, width, height);
+
+      if (time > reformAt && reformAt !== 0) {
+        reformParticles();
+        reformAt = 0;
+      }
+
+      if (time > autoBurstAt && autoBurstAt !== 0) {
+        burst(1.4);
+        autoBurstAt = 0;
+        reformAt = time + 1200;
+      }
 
       for (const p of particles) {
         p.update();
         p.draw();
       }
 
-      if (particles.length <= 520) drawConnections();
+      drawConnections();
       updateSparks();
       drawSparks();
 
       if (pinchCooldown > 0) pinchCooldown--;
 
       requestAnimationFrame(animate);
+    }
+
+    function isFingerUp(tip, pip) {
+      return tip.y < pip.y;
+    }
+
+    function detectGesture(hand) {
+      const thumbTip = hand[4];
+      const indexTip = hand[8];
+      const middleTip = hand[12];
+      const ringTip = hand[16];
+      const pinkyTip = hand[20];
+
+      const indexPip = hand[6];
+      const middlePip = hand[10];
+      const ringPip = hand[14];
+      const pinkyPip = hand[18];
+
+      const indexUp = isFingerUp(indexTip, indexPip);
+      const middleUp = isFingerUp(middleTip, middlePip);
+      const ringUp = isFingerUp(ringTip, ringPip);
+      const pinkyUp = isFingerUp(pinkyTip, pinkyPip);
+
+      const pinchDist = Math.hypot(indexTip.x - thumbTip.x, indexTip.y - thumbTip.y);
+      const pinch = pinchDist < 0.045;
+
+      if (pinch) return "love";
+
+      let count = 0;
+      if (indexUp) count++;
+      if (middleUp) count++;
+      if (ringUp) count++;
+      if (pinkyUp) count++;
+
+      if (count === 1 && indexUp) return "one";
+      if (count === 2 && indexUp && middleUp) return "two";
+      if (count === 3 && indexUp && middleUp && ringUp) return "three";
+
+      return "idle";
     }
 
     async function initHandTracking() {
@@ -488,25 +621,19 @@
       return handLandmarker;
     }
 
-    function setBadge(mode, text, statusText) {
-      dot.className = `dot ${mode}`;
-      badgeText.textContent = text;
-      if (statusText) statusEl.textContent = statusText;
-    }
-
     async function startCamera() {
-      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-        setBadge("err", "Browser tidak mendukung kamera", "Coba Chrome, Edge, atau Safari terbaru.");
+      if (!navigator.mediaDevices?.getUserMedia) {
+        setBadge("err", "Browser tidak mendukung kamera", "Coba pakai Chrome atau Edge terbaru.");
         return;
       }
 
       if (!window.isSecureContext) {
-        setBadge("err", "Butuh HTTPS atau localhost", "Izin kamera hanya jalan di localhost atau website HTTPS seperti GitHub Pages.");
+        setBadge("err", "Butuh HTTPS", "GitHub Pages sudah HTTPS. Pastikan buka dari alamat https.");
         return;
       }
 
       try {
-        setBadge("", "Meminta izin kamera...", "Saat popup browser muncul, pilih Allow / Izinkan.");
+        setBadge("", "Meminta izin kamera...", "Saat popup muncul, pilih Allow / Izinkan.");
 
         const stream = await navigator.mediaDevices.getUserMedia({
           video: {
@@ -522,17 +649,14 @@
         await initHandTracking();
 
         cameraStarted = true;
-        setBadge("ok", "Kamera aktif", "Gerakkan telunjuk. Cubit jempol + telunjuk untuk ledakan partikel.");
+        setBadge("ok", "Kamera aktif", "Tunjukkan gesture ke kamera.");
         detectHands();
-      } catch (error) {
-        const message = String(error?.name || error);
-
-        if (message.includes("NotAllowedError")) {
-          setBadge("err", "Izin kamera ditolak", "Klik ikon gembok di address bar lalu ubah Camera menjadi Allow.");
-        } else if (message.includes("NotFoundError")) {
-          setBadge("err", "Kamera tidak ditemukan", "Pastikan laptop/HP punya kamera yang aktif.");
+      } catch (err) {
+        const name = String(err?.name || err);
+        if (name.includes("NotAllowedError")) {
+          setBadge("err", "Izin ditolak", "Klik ikon kamera/gembok di address bar lalu ubah jadi Allow.");
         } else {
-          setBadge("err", "Gagal mengaktifkan kamera", "Cek izin browser, lalu refresh halaman dan coba lagi.");
+          setBadge("err", "Gagal mengaktifkan kamera", "Refresh lalu coba lagi.");
         }
       }
     }
@@ -540,57 +664,65 @@
     function detectHands() {
       if (!cameraStarted || !handLandmarker) return;
 
-      const nowInMs = performance.now();
+      const now = performance.now();
+
       if (video.currentTime !== lastVideoTime) {
         lastVideoTime = video.currentTime;
-        const results = handLandmarker.detectForVideo(video, nowInMs);
+        const results = handLandmarker.detectForVideo(video, now);
 
         if (results.landmarks?.length) {
           const hand = results.landmarks[0];
           const indexTip = hand[8];
-          const thumbTip = hand[4];
 
           const newX = width - indexTip.x * width;
           const newY = indexTip.y * height;
 
-          pointer.prevX = pointer.x;
-          pointer.prevY = pointer.y;
+          pointer.vx = newX - pointer.x;
+          pointer.vy = newY - pointer.y;
           pointer.x = newX;
           pointer.y = newY;
-          pointer.vx = pointer.x - pointer.prevX;
-          pointer.vy = pointer.y - pointer.prevY;
           pointer.active = true;
 
-          const pinchDist = Math.hypot(indexTip.x - thumbTip.x, indexTip.y - thumbTip.y);
-          const isPinching = pinchDist < 0.055;
-          pointer.pinch = isPinching;
+          const gesture = detectGesture(hand);
 
-          if (isPinching && pinchCooldown === 0) {
-            spawnBurst(pointer.x, pointer.y, 1.3);
-            pinchCooldown = 18;
+          if (gesture === lastGesture) {
+            gestureHold++;
+          } else {
+            gestureHold = 0;
+            lastGesture = gesture;
+          }
+
+          if (gesture === "love" && pinchCooldown === 0) {
+            triggerMode("love");
+            burst(1.2);
+            pinchCooldown = 24;
+          } else if (gesture !== "love" && gestureHold > 8 && gesture !== currentMode) {
+            triggerMode(gesture);
           }
         } else {
           pointer.active = false;
-          pointer.pinch = false;
-          pointer.vx *= 0.9;
-          pointer.vy *= 0.9;
+          gestureHold = 0;
+          lastGesture = "idle";
         }
       }
 
       requestAnimationFrame(detectHands);
     }
 
-    startBtn.addEventListener("click", startCamera);
-    burstBtn.addEventListener("click", () => {
-      spawnBurst(pointer.smoothX || width / 2, pointer.smoothY || height / 2, 1.5);
+    explodeBtn.addEventListener("click", () => {
+      burst(1.6);
+      reformAt = performance.now() + 1200;
     });
+
+    startBtn.addEventListener("click", startCamera);
 
     window.addEventListener("resize", () => {
       resizeCanvas();
-      textTargets = getTextTargets(DISPLAY_TEXT);
-      for (const p of particles) p.seed();
+      shapeTargets = makeShapeTargets(currentShapeKey);
+      for (const p of particles) p.reset(false);
     });
-    animate();
+
+    animate(performance.now());
   </script>
 </body>
 </html>
