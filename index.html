@@ -159,9 +159,7 @@
     }
 
     @media (max-width: 760px) {
-      .hint {
-        display: none;
-      }
+      .hint { display: none; }
       .controls {
         max-width: calc(100vw - 24px);
         left: 12px;
@@ -188,7 +186,7 @@
 
     <div class="controls">
       <h1>Gesture Particle Magic Lite</h1>
-      <p>Pinch = tangan genggam. 1 jari = LOVE YOU. 2 jari = © COPYRIGHT. 3 jari = DWI CUYY. 5 jari = LANJUT.</p>
+      <p>Pinch = LOVE. 1 jari = LOVE YOU. 2 jari = © COPYRIGHT. 3 jari = DWI CUYY. 5 jari = LANJUT.</p>
       <div class="buttons">
         <button id="startBtn" class="primary">Aktifkan Kamera</button>
         <button id="burstBtn" class="ghost">Burst</button>
@@ -199,7 +197,7 @@
     </div>
 
     <div class="hint">
-      Pinch = tangan genggam.<br>
+      Pinch = LOVE.<br>
       1 jari = LOVE YOU.<br>
       2 jari = © COPYRIGHT.<br>
       3 jari = DWI CUYY.<br>
@@ -228,6 +226,9 @@
       if (!condition) throw new Error(`Smoke test failed: ${message}`);
     }
 
+    assert(app, "#app harus ada");
+    assert(video, "#video harus ada");
+
     const scene = new THREE.Scene();
     const aspect = window.innerWidth / window.innerHeight;
     const camera = new THREE.OrthographicCamera(-aspect, aspect, 1, -1, 0.1, 10);
@@ -240,12 +241,7 @@
 
     const composer = new EffectComposer(renderer);
     composer.addPass(new RenderPass(scene, camera));
-    const bloom = new UnrealBloomPass(
-      new THREE.Vector2(window.innerWidth, window.innerHeight),
-      0.08,
-      0.12,
-      0.99
-    );
+    const bloom = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 0.08, 0.12, 0.99);
     composer.addPass(bloom);
 
     const particleCount = window.innerWidth < 768 ? 520 : 820;
@@ -256,7 +252,6 @@
     const targets = Array.from({ length: particleCount }, () => new THREE.Vector3());
     const bases = Array.from({ length: particleCount }, () => new THREE.Vector3());
 
-    const geometry = new THREE.BufferGeometry();
     for (let i = 0; i < particleCount; i++) {
       positions[i * 3] = (Math.random() - 0.5) * 1.8;
       positions[i * 3 + 1] = (Math.random() - 0.5) * 1.2;
@@ -267,6 +262,7 @@
       colors[i * 3 + 2] = 1.0;
     }
 
+    const geometry = new THREE.BufferGeometry();
     geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
     geometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
     geometry.setAttribute("aSize", new THREE.BufferAttribute(sizes, 1));
@@ -327,12 +323,12 @@
     let reformTimer = 0;
 
     const SHAPES = {
-      idle:   { type: "text", text: "DWI",         colors: [[0.60,0.82,1.0],[0.75,0.60,1.0],[0.40,0.95,0.88]] },
-      fist:   { type: "heart", text: "", colors: [[1.0,0.45,0.65],[0.9,0.55,1.0],[0.6,0.8,1.0]] },
-      one:    { type: "text", text: "LOVE YOU",    colors: [[1.0,0.52,0.78],[0.80,0.62,1.0],[0.55,0.86,1.0]] },
-      two:    { type: "text", text: "© COPYRIGHT", colors: [[0.65,0.84,1.0],[0.88,0.88,1.0],[0.75,0.68,1.0]] },
-      three:  { type: "text", text: "DWI CUYY",    colors: [[0.42,0.94,0.90],[0.62,0.82,1.0],[0.74,0.56,1.0]] },
-      five:   { type: "text", text: "LANJUT",      colors: [[1.0,0.62,0.72],[0.90,0.82,0.35],[0.44,0.95,0.90],[0.55,0.78,1.0],[0.88,0.56,1.0]] }
+      idle:  { type: "text",  text: "DWI",         colors: [[0.60,0.82,1.0],[0.75,0.60,1.0],[0.40,0.95,0.88]] },
+      love:  { type: "heart", text: "",            colors: [[1.0,0.45,0.65],[0.9,0.55,1.0],[0.6,0.8,1.0]] },
+      one:   { type: "text",  text: "LOVE YOU",    colors: [[1.0,0.52,0.78],[0.80,0.62,1.0],[0.55,0.86,1.0]] },
+      two:   { type: "text",  text: "© COPYRIGHT", colors: [[0.65,0.84,1.0],[0.88,0.88,1.0],[0.75,0.68,1.0]] },
+      three: { type: "text",  text: "DWI CUYY",    colors: [[0.42,0.94,0.90],[0.62,0.82,1.0],[0.74,0.56,1.0]] },
+      five:  { type: "text",  text: "LANJUT",      colors: [[1.0,0.62,0.72],[0.90,0.82,0.35],[0.44,0.95,0.90],[0.55,0.78,1.0],[0.88,0.56,1.0]] }
     };
 
     function setBadge(mode, text, subtext) {
@@ -373,7 +369,7 @@
           if (image[(y * w + x) * 4 + 3] > 40) {
             pts.push({
               pos: new THREE.Vector3(
-                ((x / w) - 0.5) * 1.55 * scale.x,
+                ((x / w) - 0.5) * 1.35 * scale.x,
                 (0.5 - (y / h)) * 0.88,
                 0
               ),
@@ -389,7 +385,6 @@
     function buildHeartPoints() {
       const pts = [];
       const aspectLocal = Math.min(window.innerWidth / window.innerHeight, 1.8);
-
       while (pts.length < 700) {
         const x = (Math.random() * 2 - 1) * 1.2;
         const y = (Math.random() * 2 - 1) * 1.2;
@@ -398,7 +393,7 @@
           pts.push({ pos: new THREE.Vector3(x * 0.55 * aspectLocal, y * 0.75, 0), t: Math.random() });
         }
       }
-
+      assert(pts.length > 0, "Generated heart points");
       return pts;
     }
 
@@ -407,7 +402,7 @@
       const pts = shape.type === "heart" ? buildHeartPoints() : buildTextPoints(shape.text);
       for (let i = 0; i < particleCount; i++) {
         const src = pts[i % pts.length];
-        const targetPos = src.pos || src;
+        const targetPos = src.pos;
         targets[i].copy(targetPos);
         bases[i].copy(targetPos);
         const c = paletteColor(i + Math.floor((src.t || 0) * 10), shape.colors);
@@ -419,7 +414,7 @@
       currentMode = name;
       const labelMap = {
         idle: "IDLE",
-        fist: "TANGAN GENGGAM",
+        love: "LOVE",
         one: "LOVE YOU",
         two: "© COPYRIGHT",
         three: "DWI CUYY",
@@ -450,8 +445,14 @@
       reformTimer = performance.now() + 900;
     }
 
-    function isFingerUp(tip, pip) {
-      return tip.y < pip.y;
+    function isFingerUp(tip, pip, margin = 0.04) {
+      return tip.y < pip.y - margin;
+    }
+
+    function isThumbExtended(thumbTip, thumbIp) {
+      const xSpread = Math.abs(thumbTip.x - thumbIp.x);
+      const yLift = thumbIp.y - thumbTip.y;
+      return xSpread > 0.04 && yLift > 0.06;
     }
 
     function detectGesture(hand) {
@@ -467,25 +468,21 @@
       const pinkyPip = hand[18];
 
       const pinchDist = Math.hypot(indexTip.x - thumbTip.x, indexTip.y - thumbTip.y);
-      if (pinchDist < 0.05) return "fist";
+      if (pinchDist < 0.05) return "love";
 
       const indexUp = isFingerUp(indexTip, indexPip);
       const middleUp = isFingerUp(middleTip, middlePip);
       const ringUp = isFingerUp(ringTip, ringPip);
       const pinkyUp = isFingerUp(pinkyTip, pinkyPip);
-      const thumbUp = thumbTip.y < thumbIp.y - 0.02 || thumbTip.x < thumbIp.x - 0.02;
+      const thumbUp = isThumbExtended(thumbTip, thumbIp);
 
-      let count = 0;
-      if (indexUp) count++;
-      if (middleUp) count++;
-      if (ringUp) count++;
-      if (pinkyUp) count++;
-      if (thumbUp) count++;
+      const extendedNonThumb = [indexUp, middleUp, ringUp, pinkyUp].filter(Boolean).length;
+      const extendedAll = extendedNonThumb + (thumbUp ? 1 : 0);
 
-      if (count === 1 && indexUp) return "one";
-      if (count === 2 && indexUp && middleUp) return "two";
-      if (count === 3 && indexUp && middleUp && ringUp) return "three";
-      if (count >= 5) return "five";
+      if (extendedNonThumb === 1 && indexUp) return "one";
+      if (extendedNonThumb === 2 && indexUp && middleUp) return "two";
+      if (extendedNonThumb === 3 && indexUp && middleUp && ringUp) return "three";
+      if (extendedAll >= 5 || (thumbUp && extendedNonThumb === 4)) return "five";
       return "idle";
     }
 
@@ -503,6 +500,32 @@
       handOne[3] = { x: 0.24, y: 0.48 };
       assert(detectGesture(handOne) === "one", "Single raised index finger should resolve to one");
 
+      const handTwo = Array.from({ length: 21 }, () => ({ x: 0.5, y: 0.8 }));
+      handTwo[8] = { x: 0.44, y: 0.2 };
+      handTwo[6] = { x: 0.44, y: 0.46 };
+      handTwo[12] = { x: 0.56, y: 0.18 };
+      handTwo[10] = { x: 0.56, y: 0.46 };
+      handTwo[16] = { x: 0.62, y: 0.82 };
+      handTwo[14] = { x: 0.62, y: 0.64 };
+      handTwo[20] = { x: 0.68, y: 0.84 };
+      handTwo[18] = { x: 0.68, y: 0.66 };
+      handTwo[4] = { x: 0.24, y: 0.5 };
+      handTwo[3] = { x: 0.28, y: 0.48 };
+      assert(detectGesture(handTwo) === "two", "Raised index and middle fingers should resolve to two");
+
+      const handThree = Array.from({ length: 21 }, () => ({ x: 0.5, y: 0.8 }));
+      handThree[8] = { x: 0.40, y: 0.2 };
+      handThree[6] = { x: 0.40, y: 0.46 };
+      handThree[12] = { x: 0.52, y: 0.16 };
+      handThree[10] = { x: 0.52, y: 0.46 };
+      handThree[16] = { x: 0.64, y: 0.22 };
+      handThree[14] = { x: 0.64, y: 0.48 };
+      handThree[20] = { x: 0.74, y: 0.84 };
+      handThree[18] = { x: 0.74, y: 0.66 };
+      handThree[4] = { x: 0.22, y: 0.52 };
+      handThree[3] = { x: 0.26, y: 0.48 };
+      assert(detectGesture(handThree) === "three", "Raised index, middle, ring should resolve to three");
+
       const handFive = Array.from({ length: 21 }, () => ({ x: 0.5, y: 0.8 }));
       handFive[4] = { x: 0.22, y: 0.32 };
       handFive[3] = { x: 0.28, y: 0.42 };
@@ -516,10 +539,23 @@
       handFive[18] = { x: 0.74, y: 0.50 };
       assert(detectGesture(handFive) === "five", "Open palm should resolve to five");
 
-      const handFist = Array.from({ length: 21 }, () => ({ x: 0.5, y: 0.5 }));
-      handFist[4] = { x: 0.45, y: 0.45 };
-      handFist[8] = { x: 0.47, y: 0.46 };
-      assert(detectGesture(handFist) === "fist", "Pinch should resolve to fist");
+      const handLove = Array.from({ length: 21 }, () => ({ x: 0.5, y: 0.5 }));
+      handLove[4] = { x: 0.45, y: 0.45 };
+      handLove[8] = { x: 0.47, y: 0.46 };
+      assert(detectGesture(handLove) === "love", "Pinch should resolve to love");
+
+      const handIdle = Array.from({ length: 21 }, () => ({ x: 0.5, y: 0.6 }));
+      handIdle[4] = { x: 0.46, y: 0.58 };
+      handIdle[3] = { x: 0.48, y: 0.56 };
+      handIdle[8] = { x: 0.5, y: 0.58 };
+      handIdle[6] = { x: 0.5, y: 0.56 };
+      handIdle[12] = { x: 0.54, y: 0.60 };
+      handIdle[10] = { x: 0.54, y: 0.58 };
+      handIdle[16] = { x: 0.58, y: 0.61 };
+      handIdle[14] = { x: 0.58, y: 0.59 };
+      handIdle[20] = { x: 0.62, y: 0.62 };
+      handIdle[18] = { x: 0.62, y: 0.60 };
+      assert(detectGesture(handIdle) === "idle", "Folded hand should resolve to idle");
 
       assert(buildTextPoints("LANJUT").length > 0, "LANJUT text should generate points");
       assert(buildHeartPoints().length > 0, "Heart shape should generate points");
@@ -589,17 +625,18 @@
           pointer.active = true;
 
           const gesture = detectGesture(hand);
-          if (gesture === lastGesture) gestureHold++;
-          else {
+          if (gesture === lastGesture) {
+            gestureHold++;
+          } else {
             gestureHold = 0;
             lastGesture = gesture;
           }
 
-          if (gesture === "fist" && pinchCooldown <= 0) {
-            applyShape("fist");
+          if (gesture === "love" && pinchCooldown <= 0) {
+            applyShape("love");
             explodeShape(0.72);
             pinchCooldown = 20;
-          } else if (gesture !== "fist" && gestureHold > 6 && gesture !== currentMode) {
+          } else if (gesture !== "love" && gestureHold > 6 && gesture !== currentMode) {
             applyShape(gesture);
           }
         } else {
@@ -666,6 +703,7 @@
       if (overlay) overlay.classList.add("hidden");
       explodeShape(1.2);
     });
+
     startBtn.addEventListener("click", startCamera);
 
     window.addEventListener("resize", () => {
