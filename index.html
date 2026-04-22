@@ -377,14 +377,31 @@
 
     function buildHeartPoints() {
       const pts = [];
-      const scale = viewScale().x * 0.026;
-      for (let i = 0; i < 360; i++) {
-        const t = (i / 700) * Math.PI * 2;
-        const x = 16 * Math.pow(Math.sin(t), 3);
-        const y = 13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t);
-        pts.push(new THREE.Vector3(x * scale, y * scale * 0.85, 0));
+      const aspect = window.innerWidth / window.innerHeight;
+      const xScale = 0.42 * Math.min(aspect, 1.8);
+      const yScale = 0.62;
+
+      // Isi heart, bukan cuma outline, supaya bentuknya penuh dan jelas.
+      while (pts.length < 520) {
+        const x = (Math.random() * 2 - 1) * 1.2;
+        const y = (Math.random() * 2 - 1) * 1.2;
+
+        // Implicit heart equation
+        const eq = Math.pow(x * x + y * y - 1, 3) - x * x * Math.pow(y, 3);
+        if (eq <= 0) {
+          pts.push(new THREE.Vector3(x * xScale, y * yScale * 0.95, 0));
+        }
       }
-      assert(pts.length === 360, "Heart point count should match expected samples");
+
+      // Tambah titik outline biar tepinya tetap rapi
+      for (let i = 0; i < 180; i++) {
+        const t = (i / 180) * Math.PI * 2;
+        const hx = 16 * Math.pow(Math.sin(t), 3);
+        const hy = 13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t);
+        pts.push(new THREE.Vector3(hx * 0.026 * Math.min(aspect, 1.8), hy * 0.026 * 0.82, 0));
+      }
+
+      assert(pts.length > 500, "Heart shape should generate enough points");
       return pts;
     }
 
