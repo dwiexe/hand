@@ -3,92 +3,56 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Gesture Magic - Refined</title>
+  <title>Gesture Magic - High Precision</title>
   <style>
-    :root {
-      --primary: #00d2ff;
-      --secondary: #3a7bd5;
-      --bg: #020617;
-    }
-    html, body {
-      margin: 0; width: 100%; height: 100%; overflow: hidden;
-      background: var(--bg);
-      font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-    }
+    :root { --accent: #00f2ff; }
+    html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; background: #000; font-family: sans-serif; }
     #app { position: fixed; inset: 0; z-index: 1; }
     video { display: none; }
     
-    .ui-layer {
-      position: fixed; inset: 0; z-index: 10;
-      pointer-events: none; color: white;
-      display: flex; flex-direction: column; justify-content: space-between;
-      padding: 24px;
+    .ui {
+      position: fixed; inset: 0; z-index: 10; pointer-events: none;
+      color: white; padding: 25px; display: flex; flex-direction: column; justify-content: space-between;
     }
     
-    .glass-card {
-      pointer-events: auto;
-      background: rgba(15, 23, 42, 0.6);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 24px;
-      padding: 20px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    .card {
+      pointer-events: auto; background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(15px); border: 1px solid rgba(0, 242, 255, 0.3);
+      border-radius: 20px; padding: 20px; width: fit-content;
     }
 
-    .header { align-self: center; text-align: center; }
-    .header h2 { margin: 0; font-size: 14px; letter-spacing: 4px; text-transform: uppercase; opacity: 0.8; }
-
-    .controls { width: 100%; max-width: 400px; }
-    .controls h1 { margin: 0 0 10px; font-size: 22px; background: linear-gradient(to right, #fff, #94a3b8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-    .controls p { margin: 0 0 20px; font-size: 13px; color: #94a3b8; line-height: 1.6; }
-
-    .btn-group { display: flex; gap: 12px; }
     button {
-      flex: 1; padding: 12px; border-radius: 12px; border: none;
-      font-weight: 700; cursor: pointer; transition: all 0.2s;
+      background: var(--accent); color: #000; border: none;
+      padding: 12px 24px; border-radius: 10px; font-weight: bold;
+      cursor: pointer; transition: 0.2s;
     }
-    .btn-primary { background: white; color: black; }
-    .btn-primary:disabled { background: #334155; color: #94a3b8; cursor: wait; }
-    .btn-ghost { background: rgba(255,255,255,0.1); color: white; }
-    button:hover:not(:disabled) { transform: translateY(-2px); filter: brightness(1.1); }
+    button:disabled { background: #444; color: #888; }
+    
+    .status { margin-top: 10px; font-size: 12px; display: flex; align-items: center; gap: 8px; }
+    .dot { width: 8px; height: 8px; border-radius: 50%; background: red; }
+    .dot.on { background: #00ff00; box-shadow: 0 0 8px #00ff00; }
 
-    .status-area { margin-top: 15px; display: flex; align-items: center; gap: 10px; font-size: 12px; }
-    .indicator { width: 8px; height: 8px; border-radius: 50%; background: #ef4444; }
-    .indicator.active { background: #10b981; box-shadow: 0 0 10px #10b981; }
-
-    .legend { position: absolute; right: 24px; bottom: 24px; font-size: 12px; color: #94a3b8; text-align: right; }
+    .guide { align-self: flex-end; font-size: 13px; line-height: 1.8; border-left: 3px solid var(--accent); padding-left: 15px; }
+    b { color: var(--accent); }
   </style>
 </head>
 <body>
   <div id="app"></div>
   <video id="video" autoplay playsinline muted></video>
 
-  <div class="ui-layer">
-    <div class="header">
-      <h2>Gesture Particle System</h2>
+  <div class="ui">
+    <div class="card">
+      <h2 style="margin:0 0 10px 0; font-size: 18px;">Gesture Control v2.0</h2>
+      <button id="startBtn">NYALAKAN KAMERA</button>
+      <div class="status"><div id="dot" class="dot"></div> <span id="msg">Kamera Offline</span></div>
     </div>
 
-    <div class="glass-card controls">
-      <h1>Magic Controller</h1>
-      <p>Gunakan gerakan tangan di depan kamera untuk mengubah bentuk partikel.</p>
-      
-      <div class="btn-group">
-        <button id="startBtn" class="btn-primary">Aktifkan Kamera</button>
-        <button id="burstBtn" class="btn-ghost">Ledakkan</button>
-      </div>
-
-      <div class="status-area">
-        <div id="ind" class="indicator"></div>
-        <span id="statusTxt">Kamera Belum Aktif</span>
-      </div>
-    </div>
-
-    <div class="legend glass-card">
-      <b>Genggam</b>: LOVE <br>
-      <b>1 Jari</b>: LOVE YOU <br>
-      <b>2 Jari</b>: © COPYRIGHT <br>
-      <b>3 Jari</b>: DWI CUYY <br>
-      <b>5 Jari</b>: LANJUT
+    <div class="card guide">
+      <b>Genggam:</b> Love (Hati)<br>
+      <b>1 Jari:</b> LOVE YOU<br>
+      <b>2 Jari:</b> © COPYRIGHT<br>
+      <b>3 Jari:</b> DWI CUYY<br>
+      <b>5 Jari:</b> LANJUT
     </div>
   </div>
 
@@ -96,24 +60,13 @@
     import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js";
     import { HandLandmarker, FilesetResolver } from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.18";
 
-    // --- CONFIG & STATE ---
-    const config = {
-      particleCount: window.innerWidth < 768 ? 600 : 1000,
-      colors: {
-        idle: [[0.4, 0.7, 1.0], [0.2, 0.4, 1.0]],
-        love: [[1.0, 0.2, 0.5], [1.0, 0.5, 0.8]],
-        text: [[0.5, 1.0, 0.8], [0.8, 0.5, 1.0]]
-      }
-    };
-
-    let handLandmarker, video, startBtn, burstBtn, statusTxt, ind;
+    // --- SETUP PARTIKEL (DIPERBANYAK) ---
+    const P_COUNT = 1500; // Jumlah partikel lebih banyak agar tulisan jelas
     let scene, camera, renderer, points, geometry;
-    let targets = [], velocities = [], bases = [];
+    let targets = [], velocities = [];
     let currentMode = "idle";
-    let isTracking = false;
 
-    // --- INITIALIZE THREE.JS ---
-    function initScene() {
+    function initThree() {
       scene = new THREE.Scene();
       const aspect = window.innerWidth / window.innerHeight;
       camera = new THREE.OrthographicCamera(-aspect, aspect, 1, -1, 0.1, 10);
@@ -121,180 +74,191 @@
 
       renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
       renderer.setSize(window.innerWidth, window.innerHeight);
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
       document.getElementById("app").appendChild(renderer.domElement);
 
       geometry = new THREE.BufferGeometry();
-      const pos = new Float32Array(config.particleCount * 3);
-      const cols = new Float32Array(config.particleCount * 3);
+      const pos = new Float32Array(P_COUNT * 3);
+      const cols = new Float32Array(P_COUNT * 3);
 
-      for(let i=0; i<config.particleCount; i++) {
+      for(let i=0; i<P_COUNT; i++) {
         targets.push(new THREE.Vector3(0,0,0));
-        bases.push(new THREE.Vector3(0,0,0));
         velocities.push(new THREE.Vector3(0,0,0));
       }
 
       geometry.setAttribute('position', new THREE.BufferAttribute(pos, 3));
       geometry.setAttribute('color', new THREE.BufferAttribute(cols, 3));
 
+      // Ukuran partikel diperbesar agar lebih terlihat
       const mat = new THREE.PointsMaterial({ 
-        size: 0.015, 
+        size: 0.022, 
         vertexColors: true, 
-        transparent: true, 
+        transparent: true,
+        opacity: 0.8,
         blending: THREE.AdditiveBlending 
       });
       
       points = new THREE.Points(geometry, mat);
       scene.add(points);
-      
-      updateShape("idle", "DWI");
+      updateShape("DWI", "#00f2ff");
     }
 
-    // --- GESTURE LOGIC ---
-    function getGesture(landmarks) {
-      const fingers = [8, 12, 16, 20]; // Tip of fingers
+    // --- LOGIKA SENSOR (LEBIH AKURAT) ---
+    function analyzeHand(landmarks) {
+      // Landmark jari: 8(telunjuk), 12(tengah), 16(manis), 20(kelingking)
+      // Dibandingkan dengan PIP (sendi tengah) masing-masing
+      const tips = [8, 12, 16, 20];
       const pips = [6, 10, 14, 18];
-      let upCount = 0;
+      
+      let up = [];
+      for(let i=0; i<4; i++) {
+        // Jari dianggap tegak jika ujungnya jauh lebih tinggi (nilai Y lebih kecil) dari sendi
+        if (landmarks[tips[i]].y < landmarks[pips[i]].y - 0.02) {
+          up.push(true);
+        } else {
+          up.push(false);
+        }
+      }
 
-      fingers.forEach((idx, i) => {
-        if (landmarks[idx].y < landmarks[pips[i]].y) upCount++;
-      });
-
-      // Thumb logic
-      const thumbUp = Math.abs(landmarks[4].x - landmarks[3].x) > 0.05;
-      const totalUp = upCount + (thumbUp ? 1 : 0);
-
-      if (totalUp === 0) return "love"; // Genggam = Love
-      if (totalUp === 1 && landmarks[8].y < landmarks[6].y) return "one";
-      if (totalUp === 2) return "two";
-      if (totalUp === 3) return "three";
-      if (totalUp >= 5) return "five";
+      const upCount = up.filter(Boolean).length;
+      
+      // Deteksi Genggam (Semua jari tertutup)
+      if (upCount === 0) return "love";
+      // Deteksi 1 Jari (Hanya telunjuk)
+      if (upCount === 1 && up[0]) return "one";
+      // Deteksi 2 Jari (Telunjuk & Tengah)
+      if (upCount === 2 && up[0] && up[1]) return "two";
+      // Deteksi 3 Jari
+      if (upCount === 3 && up[0] && up[1] && up[2]) return "three";
+      // Deteksi 5 Jari (Semua terbuka)
+      if (upCount === 4) return "five";
+      
       return "idle";
     }
 
-    // --- SHAPE GENERATOR ---
-    function updateShape(mode, text = "") {
+    // --- GENERATOR BENTUK (LEBIH TAJAM) ---
+    function updateShape(text, colorHex) {
       const canvas = document.createElement('canvas');
       const ctx = canvas.getContext('2d');
-      canvas.width = 1000; canvas.height = 400;
+      canvas.width = 1200; canvas.height = 500;
       
       ctx.fillStyle = 'white';
       ctx.textAlign = 'center';
-      ctx.font = 'bold 150px Arial';
+      ctx.textBaseline = 'middle';
+      // Menggunakan font yang lebih tebal
+      ctx.font = 'black 180px Arial Black, sans-serif';
       
-      if (mode === "love") {
-        ctx.font = '200px Arial';
-        ctx.fillText('❤', 500, 250);
+      if (text === "❤") {
+        ctx.font = '300px Arial';
+        ctx.fillText('❤', 600, 250);
       } else {
-        ctx.fillText(text, 500, 250);
+        ctx.fillText(text, 600, 250);
       }
 
-      const imgData = ctx.getImageData(0, 0, 1000, 400).data;
+      const imgData = ctx.getImageData(0, 0, 1200, 500).data;
       const pts = [];
-      for(let y=0; y<400; y+=6) {
-        for(let x=0; x<1000; x+=6) {
-          if(imgData[(y*1000+x)*4 + 3] > 128) {
+      // Sampling lebih rapat
+      for(let y=0; y<500; y+=4) {
+        for(let x=0; x<1200; x+=4) {
+          if(imgData[(y*1200+x)*4 + 3] > 150) {
             pts.push({
-              x: (x/1000 - 0.5) * 2,
-              y: (0.5 - y/400) * 0.8
+              x: (x/1200 - 0.5) * 2.5,
+              y: (0.5 - y/500) * 1.0
             });
           }
         }
       }
 
-      const colorSet = config.colors[mode === "love" ? "love" : "text"];
-      const posAttr = geometry.attributes.position.array;
+      const color = new THREE.Color(colorHex);
       const colAttr = geometry.attributes.color.array;
 
-      for(let i=0; i<config.particleCount; i++) {
-        const p = pts[i % pts.length];
+      for(let i=0; i<P_COUNT; i++) {
+        const p = pts[i % pts.length] || {x:0, y:0};
         targets[i].set(p.x, p.y, 0);
-        bases[i].copy(targets[i]);
-        
-        const c = colorSet[i % colorSet.length];
-        colAttr[i*3] = c[0]; colAttr[i*3+1] = c[1]; colAttr[i*3+2] = c[2];
+        colAttr[i*3] = color.r; 
+        colAttr[i*3+1] = color.g; 
+        colAttr[i*3+2] = color.b;
       }
       geometry.attributes.color.needsUpdate = true;
-      currentMode = mode;
     }
 
-    // --- CORE SYSTEM ---
-    async function setupTracking() {
-      statusTxt.textContent = "Memuat AI...";
-      const vision = await FilesetResolver.forVisionTasks("https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.18/wasm");
-      handLandmarker = await HandLandmarker.createFromOptions(vision, {
-        baseOptions: { modelAssetPath: "https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task" },
-        runningMode: "VIDEO", numHands: 1
-      });
-      
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-      video.srcObject = stream;
-      video.onloadedmetadata = () => {
-        video.play();
-        isTracking = true;
-        ind.classList.add('active');
-        statusTxt.textContent = "Sistem Aktif";
-        startBtn.style.display = "none";
-        detect();
-      };
+    // --- CAMERA & TRACKING ---
+    let handLandmarker, video;
+
+    async function startApp() {
+      const startBtn = document.getElementById("startBtn");
+      const msg = document.getElementById("msg");
+      const dot = document.getElementById("dot");
+
+      try {
+        startBtn.disabled = true;
+        msg.textContent = "Loading AI...";
+        
+        const vision = await FilesetResolver.forVisionTasks("https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.18/wasm");
+        handLandmarker = await HandLandmarker.createFromOptions(vision, {
+          baseOptions: { modelAssetPath: "https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task" },
+          runningMode: "VIDEO", numHands: 1
+        });
+
+        const stream = await navigator.mediaDevices.getUserMedia({ video: { width: 1280, height: 720 } });
+        video.srcObject = stream;
+        
+        video.onloadedmetadata = () => {
+          video.play();
+          dot.classList.add('on');
+          msg.textContent = "Sistem Aktif";
+          startBtn.style.display = "none";
+          renderLoop();
+        };
+      } catch (err) {
+        msg.textContent = "Error: " + err.message;
+        startBtn.disabled = false;
+      }
     }
 
-    function detect() {
+    function renderLoop() {
+      // Deteksi Tangan
       if(video.currentTime !== -1) {
-        const res = handLandmarker.detectForVideo(video, performance.now());
-        if(res.landmarks.length > 0) {
-          const gesture = getGesture(res.landmarks[0]);
-          if(gesture !== currentMode) {
-            const labels = { love: "❤", one: "LOVE YOU", two: "© COPYRIGHT", three: "DWI CUYY", five: "LANJUT", idle: "DWI" };
-            updateShape(gesture, labels[gesture]);
+        const result = handLandmarker.detectForVideo(video, performance.now());
+        if(result.landmarks && result.landmarks.length > 0) {
+          const mode = analyzeHand(result.landmarks[0]);
+          if(mode !== currentMode) {
+            currentMode = mode;
+            const config = {
+              love: ["❤", "#ff0055"],
+              one: ["LOVE YOU", "#00ff88"],
+              two: ["© COPYRIGHT", "#ffff00"],
+              three: ["DWI CUYY", "#00f2ff"],
+              five: ["LANJUT", "#ff9900"],
+              idle: ["DWI", "#ffffff"]
+            };
+            updateShape(config[mode][0], config[mode][1]);
           }
         }
       }
-      requestAnimationFrame(detect);
-    }
 
-    function animate() {
+      // Animasi Partikel
       const pos = geometry.attributes.position.array;
-      for(let i=0; i<config.particleCount; i++) {
-        velocities[i].x += (targets[i].x - pos[i*3]) * 0.05;
-        velocities[i].y += (targets[i].y - pos[i*3+1]) * 0.05;
-        velocities[i].multiplyScalar(0.85);
+      for(let i=0; i<P_COUNT; i++) {
+        // Efek tarikan magnet ke target
+        velocities[i].x += (targets[i].x - pos[i*3]) * 0.04;
+        velocities[i].y += (targets[i].y - pos[i*3+1]) * 0.04;
+        
+        // Gesekan (Friction)
+        velocities[i].multiplyScalar(0.8);
 
         pos[i*3] += velocities[i].x;
         pos[i*3+1] += velocities[i].y;
       }
       geometry.attributes.position.needsUpdate = true;
+      
       renderer.render(scene, camera);
-      requestAnimationFrame(animate);
+      requestAnimationFrame(renderLoop);
     }
 
-    // --- EVENTS ---
     window.onload = () => {
       video = document.getElementById("video");
-      startBtn = document.getElementById("startBtn");
-      burstBtn = document.getElementById("burstBtn");
-      statusTxt = document.getElementById("statusTxt");
-      ind = document.getElementById("ind");
-
-      initScene();
-      animate();
-
-      startBtn.onclick = async () => {
-        startBtn.disabled = true;
-        try {
-          await setupTracking();
-        } catch (e) {
-          statusTxt.textContent = "Gagal: " + e.message;
-          startBtn.disabled = false;
-        }
-      };
-
-      burstBtn.onclick = () => {
-        for(let i=0; i<config.particleCount; i++) {
-          velocities[i].x += (Math.random() - 0.5) * 0.2;
-          velocities[i].y += (Math.random() - 0.5) * 0.2;
-        }
-      };
+      initThree();
+      document.getElementById("startBtn").onclick = startApp;
     };
   </script>
 </body>
