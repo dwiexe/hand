@@ -3,47 +3,38 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Gesture Magic v3 - Bold Edition</title>
+  <title>Gesture Magic - Ultra Bold</title>
   <style>
-    :root { --neon: #00f2ff; }
-    html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; background: #000; font-family: 'Arial', sans-serif; }
+    html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; background: #000; }
     #app { position: fixed; inset: 0; z-index: 1; }
     video { display: none; }
-    
-    .ui-layer {
+    .ui {
       position: fixed; inset: 0; z-index: 10; pointer-events: none;
       display: flex; flex-direction: column; justify-content: space-between; padding: 30px;
+      color: white; font-family: sans-serif;
     }
-    
     .glass {
-      pointer-events: auto; background: rgba(255, 255, 255, 0.05);
-      backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 20px; padding: 20px; color: white;
+      pointer-events: auto; background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(10px); border-radius: 15px; padding: 15px; border: 1px solid rgba(255,255,255,0.2);
     }
-
-    #startBtn {
-      background: var(--neon); color: black; border: none; padding: 15px 30px;
-      border-radius: 12px; font-weight: 900; cursor: pointer; font-size: 16px;
+    button {
+      background: #00f2ff; color: black; border: none; padding: 12px 25px;
+      border-radius: 8px; font-weight: bold; cursor: pointer;
     }
-
-    .guide-box { font-size: 14px; line-height: 1.6; align-self: flex-start; }
-    .guide-box b { color: var(--neon); text-shadow: 0 0 10px var(--neon); }
-
-    #status { font-size: 12px; margin-top: 10px; opacity: 0.7; }
+    .guide { font-size: 13px; line-height: 1.6; align-self: flex-start; }
+    b { color: #00f2ff; }
   </style>
 </head>
 <body>
   <div id="app"></div>
   <video id="video" autoplay playsinline muted></video>
-
-  <div class="ui-layer">
+  <div class="ui">
     <div class="glass" style="width: fit-content;">
-      <button id="startBtn">START CAMERA</button>
-      <div id="status">Status: Menunggu Kamera cuyyy</div>
+      <button id="startBtn">AKTIFKAN KAMERA</button>
+      <div id="status" style="margin-top: 8px; font-size: 11px; opacity: 0.8;">Siap digunakan.</div>
     </div>
-
-    <div class="glass guide-box">
-      <b>✊ GENGGAM</b> : ❤ (LOVE)<br>
+    <div class="glass guide">
+      <b>✊ GENGGAM</b> : ❤ LOVE<br>
       <b>☝ 1 JARI</b> : LOVE YOU<br>
       <b>✌ 2 JARI</b> : © COPYRIGHT<br>
       <b>🤟 3 JARI</b> : DWI CUYY<br>
@@ -55,13 +46,11 @@
     import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js";
     import { HandLandmarker, FilesetResolver } from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.18";
 
-    // --- CONFIG ---
-    const P_COUNT = 2000; // Jumlah partikel cukup banyak
+    const P_COUNT = 3000; // Ditambah agar sangat padat
     let scene, camera, renderer, points, geometry;
     let targets = [], velocities = [];
     let currentMode = "idle";
 
-    // --- INIT THREE.JS ---
     function init() {
       scene = new THREE.Scene();
       const aspect = window.innerWidth / window.innerHeight;
@@ -70,7 +59,6 @@
 
       renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
       renderer.setSize(window.innerWidth, window.innerHeight);
-      renderer.setPixelRatio(window.devicePixelRatio);
       document.getElementById("app").appendChild(renderer.domElement);
 
       geometry = new THREE.BufferGeometry();
@@ -85,12 +73,29 @@
       geometry.setAttribute('position', new THREE.BufferAttribute(pos, 3));
       geometry.setAttribute('color', new THREE.BufferAttribute(cols, 3));
 
-      // UKURAN PARTIKEL DIBUAT BESAR (0.035) agar teks padat
-      const mat = new THREE.PointsMaterial({ 
-        size: 0.035, 
-        vertexColors: true, 
+      // SHADER MATERIAL UNTUK PARTIKEL BULAT & BERCORAK
+      const mat = new THREE.ShaderMaterial({
+        vertexColors: true,
         transparent: true,
-        blending: THREE.AdditiveBlending 
+        blending: THREE.AdditiveBlending,
+        vertexShader: `
+          varying vec3 vColor;
+          void main() {
+            vColor = color;
+            vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+            gl_PointSize = (45.0 / -mvPosition.z); // Ukuran lebih besar & konsisten
+            gl_Position = projectionMatrix * mvPosition;
+          }
+        `,
+        fragmentShader: `
+          varying vec3 vColor;
+          void main() {
+            float d = distance(gl_PointCoord, vec2(0.5));
+            if (d > 0.5) discard;
+            float glow = pow(1.0 - d * 2.0, 2.0);
+            gl_FragColor = vec4(vColor, glow);
+          }
+        `
       });
       
       points = new THREE.Points(geometry, mat);
@@ -98,19 +103,14 @@
       updateShape("DWI", "#ffffff");
     }
 
-    // --- GESTURE LOGIC (ACCURATE) ---
     function checkGesture(landmarks) {
       const tips = [8, 12, 16, 20];
       const pips = [6, 10, 14, 18];
       let fingersUp = 0;
-
       tips.forEach((tip, i) => {
-        // Jari dianggap tegak jika jarak vertikal ujung ke sendi cukup jauh
         if (landmarks[tip].y < landmarks[pips[i]].y - 0.05) fingersUp++;
       });
-
-      // Jempol (cek jarak horizontal)
-      const thumbUp = Math.abs(landmarks[4].x - landmarks[3].x) > 0.06;
+      const thumbUp = Math.abs(landmarks[4].x - landmarks[3].x) > 0.07;
       const total = fingersUp + (thumbUp ? 1 : 0);
 
       if (total === 0) return "love";
@@ -121,33 +121,31 @@
       return "idle";
     }
 
-    // --- SHAPE GENERATOR ---
     function updateShape(text, colorHex) {
       const canvas = document.createElement('canvas');
       const ctx = canvas.getContext('2d');
-      canvas.width = 1000; canvas.height = 400;
+      canvas.width = 1200; canvas.height = 400;
       
       ctx.fillStyle = 'white';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      // FONT SANGAT TEBAL
-      ctx.font = '900 160px Arial Black, sans-serif';
+      ctx.font = '900 180px Arial Black'; // Font tebal
       
       if (text === "❤") {
-        ctx.font = '250px Arial';
-        ctx.fillText('❤', 500, 200);
+        ctx.font = '300px Arial';
+        ctx.fillText('❤', 600, 200);
       } else {
-        ctx.fillText(text, 500, 200);
+        ctx.fillText(text, 600, 200);
       }
 
-      const imgData = ctx.getImageData(0, 0, 1000, 400).data;
+      const imgData = ctx.getImageData(0, 0, 1200, 400).data;
       const pts = [];
-      for(let y=0; y<400; y+=4) {
-        for(let x=0; x<1000; x+=4) {
-          if(imgData[(y*1000+x)*4 + 3] > 128) {
+      for(let y=0; y<400; y+=3) { // Sampling lebih rapat
+        for(let x=0; x<1200; x+=3) {
+          if(imgData[(y*1200+x)*4 + 3] > 128) {
             pts.push({
-              x: (x/1000 - 0.5) * 2.2, // Skala lebar teks
-              y: (0.5 - y/400) * 0.9   // Skala tinggi teks
+              x: (x/1200 - 0.5) * (window.innerWidth/window.innerHeight) * 1.8,
+              y: (0.5 - y/400) * 0.8
             });
           }
         }
@@ -157,21 +155,21 @@
       const colAttr = geometry.attributes.color.array;
 
       for(let i=0; i<P_COUNT; i++) {
-        const p = pts[i % pts.length] || {x: (Math.random()-0.5)*2, y:(Math.random()-0.5)*2};
-        targets[i].set(p.x, p.y, 0);
+        const p = pts[i % pts.length] || {x: 0, y: 0};
+        // Menambahkan JITTER agar partikel menyebar alami, tidak bergaris
+        targets[i].set(
+          p.x + (Math.random() - 0.5) * 0.02, 
+          p.y + (Math.random() - 0.5) * 0.02, 
+          0
+        );
         colAttr[i*3] = color.r; colAttr[i*3+1] = color.g; colAttr[i*3+2] = color.b;
       }
       geometry.attributes.color.needsUpdate = true;
     }
 
-    // --- TRACKING ---
     let handLandmarker, video;
     async function startCamera() {
-      const btn = document.getElementById("startBtn");
       const status = document.getElementById("status");
-      btn.disabled = true;
-      status.textContent = "Status: Loading AI...";
-
       const vision = await FilesetResolver.forVisionTasks("https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.18/wasm");
       handLandmarker = await HandLandmarker.createFromOptions(vision, {
         baseOptions: { modelAssetPath: "https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task" },
@@ -183,8 +181,8 @@
       video.srcObject = stream;
       video.onloadedmetadata = () => {
         video.play();
-        status.textContent = "Status: Kamera Aktif!";
-        btn.style.display = "none";
+        status.textContent = "Kamera Aktif!";
+        document.getElementById("startBtn").style.display = "none";
         loop();
       };
     }
@@ -211,9 +209,9 @@
 
       const pos = geometry.attributes.position.array;
       for(let i=0; i<P_COUNT; i++) {
-        velocities[i].x += (targets[i].x - pos[i*3]) * 0.05;
-        velocities[i].y += (targets[i].y - pos[i*3+1]) * 0.05;
-        velocities[i].multiplyScalar(0.8);
+        velocities[i].x += (targets[i].x - pos[i*3]) * 0.07;
+        velocities[i].y += (targets[i].y - pos[i*3+1]) * 0.07;
+        velocities[i].multiplyScalar(0.75);
         pos[i*3] += velocities[i].x;
         pos[i*3+1] += velocities[i].y;
       }
